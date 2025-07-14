@@ -21,7 +21,6 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
     }
 
     if (!token) {
-      // **FIX 1: Removed 'return' here**
       res.status(STATUS_UNAUTHORIZED).json({
         success: false,
         message: MESSAGE_AUTH_NO_TOKEN,
@@ -37,7 +36,6 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
       const user = await User.findById(decoded.id);
 
       if (!user) {
-        // **FIX 2: Removed 'return' here**
         res.status(STATUS_UNAUTHORIZED).json({
           success: false,
           message: MESSAGE_NO_USER_WITH_TOKEN,
@@ -48,9 +46,7 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
       req.user = user as any; // No 'as any' needed if AuthRequest is properly defined
       next(); // Call next to pass control to the next middleware/route handler
     } catch (error) {
-      // Log the error for debugging, but don't expose sensitive info to client
       
-      // **FIX 3: Removed 'return' here**
       res.status(STATUS_UNAUTHORIZED).json({
         success: false,
         message: MESSAGE_AUTH_TOKEN_FAILED,
@@ -59,7 +55,6 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
     }
   } catch (error) {
     
-    // **FIX 4: Removed 'return' here**
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({ 
       success: false,
       message: MESSAGE_SERVER_ERROR,

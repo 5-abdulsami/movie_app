@@ -139,8 +139,6 @@ export const getMe = async (req: AuthRequest, res: Response) => {
   try {
     const user = req.user // User is attached by the protect middleware
 
-    
-
     res.status(STATUS_OK).json({
       success: true,
       user: {
