@@ -9,10 +9,10 @@ import {
   MESSAGE_VALIDATION_PASSWORD_MIN_LENGTH,
   MESSAGE_VALIDATION_PASSWORD_REQUIRED,
   // Import API endpoint constants
-  API_AUTH_REGISTER,
-  API_AUTH_LOGIN,
-  API_AUTH_ME,
-  API_AUTH_LOGOUT,
+  PATH_REGISTER,
+  PATH_LOGIN,
+  PATH_ME,
+  PATH_LOGOUT,
 } from "../constants/apiConstants";
 
 const router = express.Router();
@@ -36,9 +36,9 @@ const loginValidation = [
 ];
 
 // Routes
-router.post(API_AUTH_REGISTER, registerValidation, asyncHandler(register));
-router.post(API_AUTH_LOGIN, loginValidation, asyncHandler(login));
-router.get(API_AUTH_ME, protect, asyncHandler(getMe));
-router.post(API_AUTH_LOGOUT, protect, asyncHandler(logout));
+router.post(PATH_REGISTER, registerValidation, asyncHandler(register));
+router.post(PATH_LOGIN, loginValidation, asyncHandler(login));
+router.get(PATH_ME, protect, asyncHandler(getMe));
+router.post(PATH_LOGOUT, protect, asyncHandler(logout));
 
 export default router;

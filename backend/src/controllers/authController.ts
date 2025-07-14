@@ -139,21 +139,14 @@ export const getMe = async (req: AuthRequest, res: Response) => {
   try {
     const user = req.user // User is attached by the protect middleware
 
-    if (!user) {
-      // This case should ideally be handled by the auth middleware,
-      // but as a fallback, if req.user is somehow null/undefined here.
-      return res.status(STATUS_NOT_FOUND).json({
-        success: false,
-        message: MESSAGE_USER_NOT_FOUND,
-      });
-    }
+    
 
     res.status(STATUS_OK).json({
       success: true,
       user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
+        id: user?._id,
+        name: user?.name,
+        email: user?.email,
       },
     })
   } catch (error: any) {

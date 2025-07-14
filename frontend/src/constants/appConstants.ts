@@ -7,14 +7,14 @@ export const FE_REGISTER_FAILED = "Registration failed. Please try again.";
 export const FE_FETCH_USER_FAILED = "Failed to fetch user data.";
 
 // Local Storage Keys
-export const LS_AUTH_TOKEN = "authToken";
+export const LS_AUTH_TOKEN = "token";
 export const LS_USER_DATA = "user";
 
 // API Endpoints
-export const API_AUTH_REGISTER = "/api/auth/register";
-export const API_AUTH_LOGIN = "/api/auth/login";
-export const API_AUTH_ME = "/api/auth/me";
-export const API_AUTH_LOGOUT = "/api/auth/logout";
+export const API_AUTH_REGISTER = "/auth/register";
+export const API_AUTH_LOGIN = "/auth/login";
+export const API_AUTH_ME = "/auth/me";
+export const API_AUTH_LOGOUT = "/auth/logout";
 
 // Frontend Route Paths
 export const PATH_LOGIN = "/login";

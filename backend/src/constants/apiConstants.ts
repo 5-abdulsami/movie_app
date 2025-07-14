@@ -43,6 +43,12 @@ export const API_AUTH_LOGIN = "/auth/login";
 export const API_AUTH_ME = "/auth/me";
 export const API_AUTH_LOGOUT = "/auth/logout";
 
+// Path Endpoints
+export const PATH_REGISTER = "/register";
+export const PATH_LOGIN = "/login";
+export const PATH_ME = "/me";
+export const PATH_LOGOUT = "/logout";
+
 
 // Constants for server.ts
 export const MESSAGE_SERVER_HEALTH_OK = "Server is running!";
