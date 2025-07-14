@@ -7,6 +7,12 @@ import { createContext, useContext, useReducer, useEffect } from "react"
 // Make sure these types are correctly defined in your ../types file
 import type { User } from "../types/index"
 import { authAPI } from "../services/api"
+import {
+  LS_AUTH_TOKEN,
+  LS_USER_DATA,
+  FE_LOGIN_FAILED,
+  FE_REGISTER_FAILED,
+} from "../constants/appConstants"
 
 
 // Define the full state interface that will be part of the context value
@@ -44,7 +50,7 @@ type AuthAction =
 // Changed initialState to directly use AuthStateContext
 const initialState: AuthStateContext = {
   user: null,
-  token: typeof window !== 'undefined' ? localStorage.getItem("token") : null, // Safer access for localStorage
+  token: typeof window !== 'undefined' ? localStorage.getItem(LS_AUTH_TOKEN) : null, 
   isLoading: false,
   isAuthenticated: false,
   error: null,
@@ -106,7 +112,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const checkAuth = async () => {
       // Check if localStorage is available (for server-side rendering or build environments)
-      const token = typeof window !== 'undefined' ? localStorage.getItem("token") : null
+      const token = typeof window !== 'undefined' ? localStorage.getItem(LS_AUTH_TOKEN) : null 
       if (token) {
         try {
           dispatch({ type: "SET_LOADING", payload: true })
@@ -119,18 +125,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           } else {
             // Only remove from localStorage if it's available
             if (typeof window !== 'undefined') {
-              localStorage.removeItem("token")
-              localStorage.removeItem("user")
+              localStorage.removeItem(LS_AUTH_TOKEN) 
+              localStorage.removeItem(LS_USER_DATA)  
             }
           }
         } catch (error) {
           // Only remove from localStorage if it's available
           if (typeof window !== 'undefined') {
-            localStorage.removeItem("token")
-            localStorage.removeItem("user")
+            localStorage.removeItem(LS_AUTH_TOKEN) 
+            localStorage.removeItem(LS_USER_DATA)  
           }
           // Optionally dispatch an error here if you want to show it in UI
-          // dispatch({ type: "AUTH_FAILURE", payload: "Failed to re-authenticate" });
+          // dispatch({ type: "AUTH_FAILURE", payload: FE_FETCH_USER_FAILED });  if uncommented
         } finally {
           dispatch({ type: "SET_LOADING", payload: false })
         }
@@ -147,18 +153,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (response.success && response.user && response.token) {
         if (typeof window !== 'undefined') {
-          localStorage.setItem("token", response.token)
-          localStorage.setItem("user", JSON.stringify(response.user))
+          localStorage.setItem(LS_AUTH_TOKEN, response.token) 
+          localStorage.setItem(LS_USER_DATA, JSON.stringify(response.user)) 
         }
         dispatch({
           type: "AUTH_SUCCESS",
           payload: { user: response.user, token: response.token },
         })
       } else {
-        throw new Error(response.message || "Login failed")
+        throw new Error(response.message || FE_LOGIN_FAILED) 
       }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message || "Login failed"
+      const errorMessage = error.response?.data?.message || error.message || FE_LOGIN_FAILED 
       dispatch({ type: "AUTH_FAILURE", payload: errorMessage })
       throw error
     }
@@ -171,18 +177,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (response.success && response.user && response.token) {
         if (typeof window !== 'undefined') {
-          localStorage.setItem("token", response.token)
-          localStorage.setItem("user", JSON.stringify(response.user))
+          localStorage.setItem(LS_AUTH_TOKEN, response.token) 
+          localStorage.setItem(LS_USER_DATA, JSON.stringify(response.user)) 
         }
         dispatch({
           type: "AUTH_SUCCESS",
           payload: { user: response.user, token: response.token },
         })
       } else {
-        throw new Error(response.message || "Registration failed")
+        throw new Error(response.message || FE_REGISTER_FAILED) 
       }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message || "Registration failed"
+      const errorMessage = error.response?.data?.message || error.message || FE_REGISTER_FAILED 
       dispatch({ type: "AUTH_FAILURE", payload: errorMessage })
       throw error
     }
@@ -190,8 +196,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem("token")
-      localStorage.removeItem("user")
+      localStorage.removeItem(LS_AUTH_TOKEN) 
+      localStorage.removeItem(LS_USER_DATA)  
     }
     dispatch({ type: "LOGOUT" })
   }
@@ -215,6 +221,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 export const useAuth = () => {
   const context = useContext(AuthContext)
   if (context === undefined) {
+    // This is a developer-facing error, usually kept as a literal string
     throw new Error("useAuth must be used within an AuthProvider")
   }
   return context

@@ -22,6 +22,9 @@ frontend/.env.test.local  # CRA test local env
 frontend/.env.production.local # CRA production local env
 
 # Build and Distribution folders
+frontend/package-lock.json
+backend/package-lock.json
+
 # Frontend production build output
 frontend/build/
 

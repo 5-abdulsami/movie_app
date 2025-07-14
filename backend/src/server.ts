@@ -3,6 +3,14 @@ import cors from "cors"
 import dotenv from "dotenv"
 import connectDB from "./config/database"
 import authRoutes from "./routes/authRoutes"
+import {
+  STATUS_OK,
+  STATUS_NOT_FOUND,
+  STATUS_INTERNAL_SERVER_ERROR,
+  MESSAGE_SERVER_HEALTH_OK,
+  MESSAGE_SOMETHING_WENT_WRONG,
+  MESSAGE_ROUTE_NOT_FOUND,
+} from "./constants/apiConstants" // Import constants
 
 // Load environment variables
 dotenv.config()
@@ -28,9 +36,9 @@ app.use("/api/auth", authRoutes)
 
 // Health check route
 app.get("/api/health", (req, res) => {
-  res.status(200).json({
+  res.status(STATUS_OK).json({
     success: true,
-    message: "Server is running!",
+    message: MESSAGE_SERVER_HEALTH_OK,
     timestamp: new Date().toISOString(),
   })
 })
@@ -38,17 +46,17 @@ app.get("/api/health", (req, res) => {
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack)
-  res.status(500).json({
+  res.status(STATUS_INTERNAL_SERVER_ERROR).json({
     success: false,
-    message: "Something went wrong!",
+    message: MESSAGE_SOMETHING_WENT_WRONG,
   })
 })
 
 // Handle 404
 app.use((req, res) => {
-  res.status(404).json({
+  res.status(STATUS_NOT_FOUND).json({ 
     success: false,
-    message: "Route not found",
+    message: MESSAGE_ROUTE_NOT_FOUND, 
   })
 })
 

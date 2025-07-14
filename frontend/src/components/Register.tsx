@@ -4,6 +4,18 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
+import {
+  PATH_DASHBOARD, // Import constant for dashboard path
+  PATH_LOGIN,     // Import constant for login path
+  VALIDATION_NAME_REQUIRED, // Import validation constants
+  VALIDATION_NAME_MIN_LENGTH,
+  VALIDATION_EMAIL_REQUIRED,
+  VALIDATION_EMAIL_INVALID,
+  VALIDATION_PASSWORD_REQUIRED,
+  VALIDATION_PASSWORD_MIN_LENGTH,
+  VALIDATION_CONFIRM_PASSWORD_REQUIRED,
+  VALIDATION_PASSWORDS_DO_NOT_MATCH,
+} from "../constants/appConstants"
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -19,7 +31,7 @@ const Register: React.FC = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/dashboard", { replace: true })
+      navigate(PATH_DASHBOARD, { replace: true })
     }
   }, [isAuthenticated, navigate])
 
@@ -31,27 +43,27 @@ const Register: React.FC = () => {
     const newErrors: { [key: string]: string } = {}
 
     if (!formData.name.trim()) {
-      newErrors.name = "Name is required"
+      newErrors.name = VALIDATION_NAME_REQUIRED 
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = "Name must be at least 2 characters"
+      newErrors.name = VALIDATION_NAME_MIN_LENGTH 
     }
 
     if (!formData.email) {
-      newErrors.email = "Email is required"
+      newErrors.email = VALIDATION_EMAIL_REQUIRED 
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid"
+      newErrors.email = VALIDATION_EMAIL_INVALID 
     }
 
     if (!formData.password) {
-      newErrors.password = "Password is required"
+      newErrors.password = VALIDATION_PASSWORD_REQUIRED 
     } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters"
+      newErrors.password = VALIDATION_PASSWORD_MIN_LENGTH 
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password"
+      newErrors.confirmPassword = VALIDATION_CONFIRM_PASSWORD_REQUIRED 
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match"
+      newErrors.confirmPassword = VALIDATION_PASSWORDS_DO_NOT_MATCH 
     }
 
     setErrors(newErrors)
@@ -95,7 +107,7 @@ const Register: React.FC = () => {
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{" "}
-            <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
+            <Link to={PATH_LOGIN} className="font-medium text-blue-600 hover:text-blue-500"> {/* Use constant for login path */}
               sign in to your existing account
             </Link>
           </p>

@@ -4,6 +4,13 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Link, useNavigate, useLocation } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
+import {
+  PATH_DASHBOARD, 
+  PATH_REGISTER,  
+  VALIDATION_EMAIL_REQUIRED, 
+  VALIDATION_EMAIL_INVALID,
+  VALIDATION_PASSWORD_REQUIRED,
+} from "../constants/appConstants"
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -16,7 +23,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const from = (location.state as any)?.from?.pathname || "/dashboard"
+  const from = (location.state as any)?.from?.pathname || PATH_DASHBOARD
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -32,13 +39,13 @@ const Login: React.FC = () => {
     const newErrors: { [key: string]: string } = {}
 
     if (!formData.email) {
-      newErrors.email = "Email is required"
+      newErrors.email = VALIDATION_EMAIL_REQUIRED
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid"
+      newErrors.email = VALIDATION_EMAIL_INVALID 
     }
 
     if (!formData.password) {
-      newErrors.password = "Password is required"
+      newErrors.password = VALIDATION_PASSWORD_REQUIRED 
     }
 
     setErrors(newErrors)
@@ -82,7 +89,7 @@ const Login: React.FC = () => {
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{" "}
-            <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
+            <Link to={PATH_REGISTER} className="font-medium text-blue-600 hover:text-blue-500"> {/* Use constant for register path */}
               create a new account
             </Link>
           </p>

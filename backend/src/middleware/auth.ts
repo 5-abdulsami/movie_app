@@ -2,6 +2,14 @@ import type { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
 import type { AuthRequest } from "../types";
+import {
+  STATUS_UNAUTHORIZED,
+  STATUS_INTERNAL_SERVER_ERROR,
+  MESSAGE_AUTH_NO_TOKEN,
+  MESSAGE_NO_USER_WITH_TOKEN,
+  MESSAGE_AUTH_TOKEN_FAILED,
+  MESSAGE_SERVER_ERROR,
+} from "../constants/apiConstants"; // Import your constants
 
 export const protect = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
@@ -14,9 +22,9 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
 
     if (!token) {
       // **FIX 1: Removed 'return' here**
-      res.status(401).json({
+      res.status(STATUS_UNAUTHORIZED).json({
         success: false,
-        message: "Not authorized to access this route (No token provided)", // More specific message
+        message: MESSAGE_AUTH_NO_TOKEN,
       });
       return; // Added an explicit return to stop execution after sending response
     }
@@ -30,9 +38,9 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
 
       if (!user) {
         // **FIX 2: Removed 'return' here**
-        res.status(401).json({
+        res.status(STATUS_UNAUTHORIZED).json({
           success: false,
-          message: "No user found with this token",
+          message: MESSAGE_NO_USER_WITH_TOKEN,
         });
         return; // Added an explicit return to stop execution after sending response
       }
@@ -43,19 +51,19 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
       // Log the error for debugging, but don't expose sensitive info to client
       console.error("Token verification or user lookup failed:", error);
       // **FIX 3: Removed 'return' here**
-      res.status(401).json({
+      res.status(STATUS_UNAUTHORIZED).json({
         success: false,
-        message: "Not authorized to access this route (Invalid token)", // More specific message
+        message: MESSAGE_AUTH_TOKEN_FAILED,
       });
       return; // Added an explicit return to stop execution after sending response
     }
   } catch (error) {
-    console.error("Protect middleware error:", error); // More specific logging
+    console.error("Protect middleware error:", error);
     // **FIX 4: Removed 'return' here**
-    res.status(500).json({
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ 
       success: false,
-      message: "Server Error during authentication process", // More specific message
+      message: MESSAGE_SERVER_ERROR,
     });
-    return; // Added an explicit return to stop execution after sending response
+    return;
   }
 };

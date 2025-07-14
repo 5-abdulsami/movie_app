@@ -1,5 +1,13 @@
 import mongoose, { type Document, Schema } from "mongoose"
 import bcrypt from "bcryptjs"
+import {
+  MESSAGE_USER_NAME_REQUIRED,
+  MESSAGE_USER_NAME_MAX_LENGTH,
+  MESSAGE_USER_EMAIL_REQUIRED,
+  MESSAGE_USER_EMAIL_VALID,
+  MESSAGE_USER_PASSWORD_REQUIRED,
+  MESSAGE_USER_PASSWORD_MIN_LENGTH,
+} from "../constants/apiConstants" // Import new constants
 
 export interface IUser extends Document {
   name: string
@@ -12,21 +20,21 @@ const UserSchema: Schema = new Schema(
   {
     name: {
       type: String,
-      required: [true, "Please provide a name"],
+      required: [true, MESSAGE_USER_NAME_REQUIRED],
       trim: true,
-      maxlength: [50, "Name cannot be more than 50 characters"],
+      maxlength: [50, MESSAGE_USER_NAME_MAX_LENGTH],
     },
     email: {
       type: String,
-      required: [true, "Please provide an email"],
+      required: [true, MESSAGE_USER_EMAIL_REQUIRED],
       unique: true,
       lowercase: true,
-      match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, "Please provide a valid email"],
+      match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, MESSAGE_USER_EMAIL_VALID],
     },
     password: {
       type: String,
-      required: [true, "Please provide a password"],
-      minlength: [6, "Password must be at least 6 characters"],
+      required: [true, MESSAGE_USER_PASSWORD_REQUIRED],
+      minlength: [6, MESSAGE_USER_PASSWORD_MIN_LENGTH],
       select: false,
     },
   },

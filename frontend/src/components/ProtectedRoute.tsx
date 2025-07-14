@@ -3,6 +3,7 @@
 import type React from "react"
 import { Navigate, useLocation } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
+import { PATH_LOGIN } from "../constants/appConstants"
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -21,7 +22,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />
+    return <Navigate to={PATH_LOGIN} state={{ from: location }} replace />
   }
 
   return <>{children}</>

@@ -2,35 +2,43 @@ import express from "express";
 import { body } from "express-validator";
 import { register, login, getMe, logout } from "../controllers/authController";
 import { protect } from "../middleware/auth";
-import type { Request, Response, NextFunction } from "express"; // Import types for clarity
+import type { Request, Response, NextFunction } from "express";
+import {
+  MESSAGE_VALIDATION_NAME_LENGTH,
+  MESSAGE_VALIDATION_INVALID_EMAIL,
+  MESSAGE_VALIDATION_PASSWORD_MIN_LENGTH,
+  MESSAGE_VALIDATION_PASSWORD_REQUIRED,
+  // Import API endpoint constants
+  API_AUTH_REGISTER,
+  API_AUTH_LOGIN,
+  API_AUTH_ME,
+  API_AUTH_LOGOUT,
+} from "../constants/apiConstants";
 
 const router = express.Router();
 
 // Helper to wrap async route handlers
-// Key change: Explicitly type `fn` and ensure `Promise.resolve` chain returns `void`
 const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any> | any) =>
-  (req: Request, res: Response, next: NextFunction): void => { // <-- Explicitly return void
-    Promise.resolve(fn(req, res, next)).catch(next); // Catch errors and pass to Express error middleware
+  (req: Request, res: Response, next: NextFunction): void => {
+    Promise.resolve(fn(req, res, next)).catch(next);
   };
 
 // Validation rules
 const registerValidation = [
-  body("name").trim().isLength({ min: 2, max: 50 }).withMessage("Name must be between 2 and 50 characters"),
-  body("email").isEmail().normalizeEmail().withMessage("Please provide a valid email"),
-  body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters long"),
+  body("name").trim().isLength({ min: 2, max: 50 }).withMessage(MESSAGE_VALIDATION_NAME_LENGTH),
+  body("email").isEmail().normalizeEmail().withMessage(MESSAGE_VALIDATION_INVALID_EMAIL),
+  body("password").isLength({ min: 6 }).withMessage(MESSAGE_VALIDATION_PASSWORD_MIN_LENGTH),
 ];
 
 const loginValidation = [
-  body("email").isEmail().normalizeEmail().withMessage("Please provide a valid email"),
-  body("password").notEmpty().withMessage("Password is required"),
+  body("email").isEmail().normalizeEmail().withMessage(MESSAGE_VALIDATION_INVALID_EMAIL),
+  body("password").notEmpty().withMessage(MESSAGE_VALIDATION_PASSWORD_REQUIRED),
 ];
 
 // Routes
-// Note: You might need to adjust the controller function signatures if they're not compatible
-// with the generic Request/Response types here or with your AuthRequest type.
-router.post("/register", registerValidation, asyncHandler(register));
-router.post("/login", loginValidation, asyncHandler(login));
-router.get("/me", protect, asyncHandler(getMe));
-router.post("/logout", protect, asyncHandler(logout));
+router.post(API_AUTH_REGISTER, registerValidation, asyncHandler(register));
+router.post(API_AUTH_LOGIN, loginValidation, asyncHandler(login));
+router.get(API_AUTH_ME, protect, asyncHandler(getMe));
+router.post(API_AUTH_LOGOUT, protect, asyncHandler(logout));
 
 export default router;

@@ -3,6 +3,22 @@ import { validationResult } from "express-validator"
 import User from "../models/User"
 import { generateToken } from "../utils/jwt"
 import type { AuthRequest } from "../types"
+import {
+  STATUS_OK,
+  STATUS_CREATED,
+  STATUS_BAD_REQUEST,
+  STATUS_UNAUTHORIZED,
+  STATUS_INTERNAL_SERVER_ERROR,
+  STATUS_NOT_FOUND,
+  MESSAGE_USER_EXISTS,
+  MESSAGE_USER_REGISTERED,
+  MESSAGE_INVALID_CREDENTIALS,
+  MESSAGE_USER_NOT_FOUND,
+  MESSAGE_SERVER_ERROR,
+  MESSAGE_USER_LOGGED_OUT,
+  MESSAGE_VALIDATION_FAILED,
+  MESSAGE_LOGIN_SUCCESS,
+} from "../constants/apiConstants"
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -12,9 +28,9 @@ export const register = async (req: Request, res: Response) => {
     // Check for validation errors
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      return res.status(400).json({
+      return res.status(STATUS_BAD_REQUEST).json({
         success: false,
-        message: "Validation failed",
+        message: MESSAGE_VALIDATION_FAILED, 
         errors: errors.array(),
       })
     }
@@ -24,9 +40,9 @@ export const register = async (req: Request, res: Response) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email })
     if (existingUser) {
-      return res.status(400).json({
+      return res.status(STATUS_BAD_REQUEST).json({
         success: false,
-        message: "User already exists with this email",
+        message: MESSAGE_USER_EXISTS,
       })
     }
 
@@ -40,9 +56,9 @@ export const register = async (req: Request, res: Response) => {
     // Generate token
     const token = generateToken(String(user._id))
 
-    res.status(201).json({
+    res.status(STATUS_CREATED).json({
       success: true,
-      message: "User registered successfully",
+      message: MESSAGE_USER_REGISTERED,
       token,
       user: {
         id: user._id,
@@ -52,9 +68,9 @@ export const register = async (req: Request, res: Response) => {
     })
   } catch (error: any) {
     console.error("Register error:", error)
-    res.status(500).json({
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server error during registration",
+      message: MESSAGE_SERVER_ERROR,
     })
   }
 }
@@ -67,9 +83,9 @@ export const login = async (req: Request, res: Response) => {
     // Check for validation errors
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      return res.status(400).json({
+      return res.status(STATUS_BAD_REQUEST).json({
         success: false,
-        message: "Validation failed",
+        message: MESSAGE_VALIDATION_FAILED, 
         errors: errors.array(),
       })
     }
@@ -79,27 +95,27 @@ export const login = async (req: Request, res: Response) => {
     // Check if user exists and include password
     const user = await User.findOne({ email }).select("+password")
     if (!user) {
-      return res.status(401).json({
+      return res.status(STATUS_UNAUTHORIZED).json({
         success: false,
-        message: "Invalid credentials",
+        message: MESSAGE_INVALID_CREDENTIALS,
       })
     }
 
     // Check password
     const isPasswordMatch = await user.comparePassword(password)
     if (!isPasswordMatch) {
-      return res.status(401).json({
+      return res.status(STATUS_UNAUTHORIZED).json({
         success: false,
-        message: "Invalid credentials",
+        message: MESSAGE_INVALID_CREDENTIALS,
       })
     }
 
     // Generate token
     const token = generateToken(String(user._id))
 
-    res.status(200).json({
+    res.status(STATUS_OK).json({
       success: true,
-      message: "Login successful",
+      message: MESSAGE_LOGIN_SUCCESS, 
       token,
       user: {
         id: user._id,
@@ -109,9 +125,9 @@ export const login = async (req: Request, res: Response) => {
     })
   } catch (error: any) {
     console.error("Login error:", error)
-    res.status(500).json({
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server error during login",
+      message: MESSAGE_SERVER_ERROR,
     })
   }
 }
@@ -121,21 +137,30 @@ export const login = async (req: Request, res: Response) => {
 // @access  Private
 export const getMe = async (req: AuthRequest, res: Response) => {
   try {
-    const user = req.user
+    const user = req.user // User is attached by the protect middleware
 
-    res.status(200).json({
+    if (!user) {
+      // This case should ideally be handled by the auth middleware,
+      // but as a fallback, if req.user is somehow null/undefined here.
+      return res.status(STATUS_NOT_FOUND).json({
+        success: false,
+        message: MESSAGE_USER_NOT_FOUND,
+      });
+    }
+
+    res.status(STATUS_OK).json({
       success: true,
       user: {
-        id: user?._id,
-        name: user?.name,
-        email: user?.email,
+        id: user._id,
+        name: user.name,
+        email: user.email,
       },
     })
   } catch (error: any) {
     console.error("Get me error:", error)
-    res.status(500).json({
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server error",
+      message: MESSAGE_SERVER_ERROR,
     })
   }
 }
@@ -145,15 +170,15 @@ export const getMe = async (req: AuthRequest, res: Response) => {
 // @access  Private
 export const logout = async (req: Request, res: Response) => {
   try {
-    res.status(200).json({
+    res.status(STATUS_OK).json({
       success: true,
-      message: "Logout successful",
+      message: MESSAGE_USER_LOGGED_OUT,
     })
   } catch (error: any) {
     console.error("Logout error:", error)
-    res.status(500).json({
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Server error during logout",
+      message: MESSAGE_SERVER_ERROR,
     })
   }
 }

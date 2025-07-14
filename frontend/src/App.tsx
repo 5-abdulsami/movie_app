@@ -4,6 +4,12 @@ import ProtectedRoute from "./components/ProtectedRoute"
 import Login from "./components/Login"
 import Register from "./components/Register"
 import Dashboard from "./components/Dashboard"
+import {
+  PATH_LOGIN,
+  PATH_REGISTER,
+  PATH_DASHBOARD,
+  PATH_HOME,
+} from "./constants/appConstants" 
 
 function App() {
   return (
@@ -11,18 +17,20 @@ function App() {
       <Router>
         <div className="App">
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path={PATH_LOGIN} element={<Login />} />
+            <Route path={PATH_REGISTER} element={<Register />} />
             <Route
-              path="/dashboard"
+              path={PATH_DASHBOARD}
               element={
                 <ProtectedRoute>
                   <Dashboard />
                 </ProtectedRoute>
               }
             />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            {/* Redirect root path to dashboard */}
+            <Route path={PATH_HOME} element={<Navigate to={PATH_DASHBOARD} replace />} />
+            {/* Catch-all route for unmatched paths, redirects to dashboard */}
+            <Route path="*" element={<Navigate to={PATH_DASHBOARD} replace />} />
           </Routes>
         </div>
       </Router>
