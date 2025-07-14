@@ -67,7 +67,7 @@ export const register = async (req: Request, res: Response) => {
       },
     })
   } catch (error: any) {
-    console.error("Register error:", error)
+    
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({
       success: false,
       message: MESSAGE_SERVER_ERROR,
@@ -124,7 +124,7 @@ export const login = async (req: Request, res: Response) => {
       },
     })
   } catch (error: any) {
-    console.error("Login error:", error)
+    
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({
       success: false,
       message: MESSAGE_SERVER_ERROR,
@@ -150,7 +150,7 @@ export const getMe = async (req: AuthRequest, res: Response) => {
       },
     })
   } catch (error: any) {
-    console.error("Get me error:", error)
+    
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({
       success: false,
       message: MESSAGE_SERVER_ERROR,
@@ -168,7 +168,7 @@ export const logout = async (req: Request, res: Response) => {
       message: MESSAGE_USER_LOGGED_OUT,
     })
   } catch (error: any) {
-    console.error("Logout error:", error)
+    
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({
       success: false,
       message: MESSAGE_SERVER_ERROR,

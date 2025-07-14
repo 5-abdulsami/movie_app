@@ -49,7 +49,7 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
       next(); // Call next to pass control to the next middleware/route handler
     } catch (error) {
       // Log the error for debugging, but don't expose sensitive info to client
-      console.error("Token verification or user lookup failed:", error);
+      
       // **FIX 3: Removed 'return' here**
       res.status(STATUS_UNAUTHORIZED).json({
         success: false,
@@ -58,7 +58,7 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
       return; // Added an explicit return to stop execution after sending response
     }
   } catch (error) {
-    console.error("Protect middleware error:", error);
+    
     // **FIX 4: Removed 'return' here**
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({ 
       success: false,
