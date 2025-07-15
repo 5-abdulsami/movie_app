@@ -1,7 +1,4 @@
-"use client"
-
 import type React from "react"
-// Make sure the path is correct and the file exists; if your context is in 'contexts' or has a different name, update accordingly.
 import { useAuth } from "../context/AuthContext"
 
 const Dashboard: React.FC = () => {

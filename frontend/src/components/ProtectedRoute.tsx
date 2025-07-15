@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 import { Navigate, useLocation } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
@@ -8,7 +6,6 @@ import { PATH_LOGIN } from "../constants/appConstants"
 interface ProtectedRouteProps {
   children: React.ReactNode
 }
-
 
  // ProtectedRoute component to guard routes that require authentication.
  // If the user is not authenticated, they will be redirected to the login page.
