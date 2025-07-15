@@ -4,10 +4,11 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
+// import validation & path constants
 import {
-  PATH_DASHBOARD, // Import constant for dashboard path
-  PATH_LOGIN,     // Import constant for login path
-  VALIDATION_NAME_REQUIRED, // Import validation constants
+  PATH_DASHBOARD,
+  PATH_LOGIN,
+  VALIDATION_NAME_REQUIRED,
   VALIDATION_NAME_MIN_LENGTH,
   VALIDATION_EMAIL_REQUIRED,
   VALIDATION_EMAIL_INVALID,
@@ -18,6 +19,7 @@ import {
 } from "../constants/appConstants"
 
 const Register: React.FC = () => {
+  // State to manage form data and errors
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -26,9 +28,11 @@ const Register: React.FC = () => {
   })
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
+  // Access the authentication context
   const { register, isLoading, error, clearError, isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
+  // Redirect to dashboard if authenticated
   useEffect(() => {
     if (isAuthenticated) {
       navigate(PATH_DASHBOARD, { replace: true })
@@ -39,6 +43,7 @@ const Register: React.FC = () => {
     clearError()
   }, [clearError])
 
+  // Validate form data before submission
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {}
 
@@ -96,7 +101,6 @@ const Register: React.FC = () => {
     try {
       await register(formData.name.trim(), formData.email, formData.password)
     } catch (error) {
-      // Error is handled by the context
     }
   }
 

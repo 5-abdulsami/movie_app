@@ -1,5 +1,6 @@
 import mongoose, { type Document, Schema } from "mongoose"
 import bcrypt from "bcryptjs"
+// Import mongoose schema validation constants
 import {
   MESSAGE_USER_NAME_REQUIRED,
   MESSAGE_USER_NAME_MAX_LENGTH,
@@ -7,7 +8,7 @@ import {
   MESSAGE_USER_EMAIL_VALID,
   MESSAGE_USER_PASSWORD_REQUIRED,
   MESSAGE_USER_PASSWORD_MIN_LENGTH,
-} from "../constants/apiConstants" // Import new constants
+} from "../constants/apiConstants"
 
 export interface IUser extends Document {
   name: string

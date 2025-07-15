@@ -3,17 +3,16 @@ import { validationResult } from "express-validator"
 import User from "../models/User"
 import { generateToken } from "../utils/jwt"
 import type { AuthRequest } from "../types"
+// Import API response constants
 import {
   STATUS_OK,
   STATUS_CREATED,
   STATUS_BAD_REQUEST,
   STATUS_UNAUTHORIZED,
   STATUS_INTERNAL_SERVER_ERROR,
-  STATUS_NOT_FOUND,
   MESSAGE_USER_EXISTS,
   MESSAGE_USER_REGISTERED,
   MESSAGE_INVALID_CREDENTIALS,
-  MESSAGE_USER_NOT_FOUND,
   MESSAGE_SERVER_ERROR,
   MESSAGE_USER_LOGGED_OUT,
   MESSAGE_VALIDATION_FAILED,
@@ -137,7 +136,8 @@ export const login = async (req: Request, res: Response) => {
 // @access  Private
 export const getMe = async (req: AuthRequest, res: Response) => {
   try {
-    const user = req.user // User is attached by the protect middleware
+    // User is attached by the protect middleware
+    const user = req.user
 
     res.status(STATUS_OK).json({
       success: true,

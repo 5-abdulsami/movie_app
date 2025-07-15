@@ -3,6 +3,7 @@ import cors from "cors"
 import dotenv from "dotenv"
 import connectDB from "./config/database"
 import authRoutes from "./routes/authRoutes"
+// Import API response constants
 import {
   STATUS_OK,
   STATUS_NOT_FOUND,
@@ -10,7 +11,7 @@ import {
   MESSAGE_SERVER_HEALTH_OK,
   MESSAGE_SOMETHING_WENT_WRONG,
   MESSAGE_ROUTE_NOT_FOUND,
-} from "./constants/apiConstants" // Import constants
+} from "./constants/apiConstants"
 
 // Load environment variables
 dotenv.config()
@@ -63,5 +64,4 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 5000
 
 app.listen(PORT, () => {
-  
 })

@@ -1,5 +1,6 @@
 import axios from "axios"
 import type { LoginData, RegisterData, ApiResponse } from "../types"
+// import endpoints and constants
 import {
   LS_AUTH_TOKEN,
   LS_USER_DATA,

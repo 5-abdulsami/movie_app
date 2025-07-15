@@ -2,6 +2,7 @@ import type { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
 import type { AuthRequest } from "../types";
+// Import API response constants
 import {
   STATUS_UNAUTHORIZED,
   STATUS_INTERNAL_SERVER_ERROR,
@@ -9,7 +10,7 @@ import {
   MESSAGE_NO_USER_WITH_TOKEN,
   MESSAGE_AUTH_TOKEN_FAILED,
   MESSAGE_SERVER_ERROR,
-} from "../constants/apiConstants"; // Import your constants
+} from "../constants/apiConstants"; 
 
 export const protect = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
@@ -25,7 +26,7 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
         success: false,
         message: MESSAGE_AUTH_NO_TOKEN,
       });
-      return; // Added an explicit return to stop execution after sending response
+      return; // Explicit return to stop execution after sending response
     }
 
     try {
@@ -40,18 +41,18 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
           success: false,
           message: MESSAGE_NO_USER_WITH_TOKEN,
         });
-        return; // Added an explicit return to stop execution after sending response
+        return;
       }
 
-      req.user = user as any; // No 'as any' needed if AuthRequest is properly defined
-      next(); // Call next to pass control to the next middleware/route handler
+      req.user = user as any;
+      next(); // Call next to pass control to the next route handler
     } catch (error) {
       
       res.status(STATUS_UNAUTHORIZED).json({
         success: false,
         message: MESSAGE_AUTH_TOKEN_FAILED,
       });
-      return; // Added an explicit return to stop execution after sending response
+      return;
     }
   } catch (error) {
     

@@ -29,7 +29,7 @@ function App() {
             />
             {/* Redirect root path to dashboard */}
             <Route path={PATH_HOME} element={<Navigate to={PATH_DASHBOARD} replace />} />
-            {/* Catch-all route for unmatched paths, redirects to dashboard */}
+            {/* Catch-all route for unmatched paths, redirect to dashboard */}
             <Route path="*" element={<Navigate to={PATH_DASHBOARD} replace />} />
           </Routes>
         </div>

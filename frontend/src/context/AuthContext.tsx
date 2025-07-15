@@ -1,12 +1,8 @@
-// frontend/src/context/AuthContext.tsx
-
-"use client"
-
 import type React from "react"
 import { createContext, useContext, useReducer, useEffect } from "react"
-// Make sure these types are correctly defined in your ../types file
 import type { User } from "../types/index"
 import { authAPI } from "../services/api"
+// import localStorage constants
 import {
   LS_AUTH_TOKEN,
   LS_USER_DATA,
@@ -22,23 +18,21 @@ interface AuthStateContext {
   token: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  error: string | null; // error is part of the state, so it should be here
+  error: string | null;
 }
 
 // Define the interface for the context value that 'useAuth' will return
 // This merges the state properties with the action functions
-interface AuthContextType extends AuthStateContext { // Extend the new state context
+interface AuthContextType extends AuthStateContext {
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   clearError: () => void;
-  // error is already in AuthStateContext
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-// ... rest of your AuthAction and authReducer remain the same ...
-
+// Define the action types for the reducer
 type AuthAction =
   | { type: "AUTH_START" }
   | { type: "AUTH_SUCCESS"; payload: { user: User; token: string } }
@@ -47,7 +41,7 @@ type AuthAction =
   | { type: "CLEAR_ERROR" }
   | { type: "SET_LOADING"; payload: boolean }
 
-// Changed initialState to directly use AuthStateContext
+// Change initialState to directly use AuthStateContext
 const initialState: AuthStateContext = {
   user: null,
   token: typeof window !== 'undefined' ? localStorage.getItem(LS_AUTH_TOKEN) : null, 
@@ -56,6 +50,7 @@ const initialState: AuthStateContext = {
   error: null,
 }
 
+// Define the reducer function
 const authReducer = (state: AuthStateContext, action: AuthAction): AuthStateContext => {
   switch (action.type) {
     case "AUTH_START":
@@ -105,13 +100,14 @@ const authReducer = (state: AuthStateContext, action: AuthAction): AuthStateCont
   }
 }
 
+// Create the AuthProvider component
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState)
 
   // Check if user is logged in on app start
   useEffect(() => {
     const checkAuth = async () => {
-      // Check if localStorage is available (for server-side rendering or build environments)
+      // Check if localStorage is available for server-side rendering
       const token = typeof window !== 'undefined' ? localStorage.getItem(LS_AUTH_TOKEN) : null 
       if (token) {
         try {
@@ -135,8 +131,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             localStorage.removeItem(LS_AUTH_TOKEN) 
             localStorage.removeItem(LS_USER_DATA)  
           }
-          // Optionally dispatch an error here if you want to show it in UI
-          // dispatch({ type: "AUTH_FAILURE", payload: FE_FETCH_USER_FAILED });  if uncommented
         } finally {
           dispatch({ type: "SET_LOADING", payload: false })
         }
@@ -146,11 +140,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuth()
   }, [])
 
+  // The login and signup functions will call the API and update the context state
   const login = async (email: string, password: string) => {
     try {
       dispatch({ type: "AUTH_START" })
       const response = await authAPI.login({ email, password })
 
+      // Check if the response is successful and contains user and token
       if (response.success && response.user && response.token) {
         if (typeof window !== 'undefined') {
           localStorage.setItem(LS_AUTH_TOKEN, response.token) 
@@ -194,6 +190,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }
 
+  // The logout function clears the user data from localStorage and updates the state
   const logout = () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(LS_AUTH_TOKEN) 
