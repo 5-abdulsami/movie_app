@@ -4,6 +4,7 @@ import ProtectedRoute from "./components/ProtectedRoute"
 import Login from "./components/Login"
 import Register from "./components/Register"
 import Dashboard from "./components/Dashboard"
+import HomePage from "./components/HomePage"
 import {
   PATH_LOGIN,
   PATH_REGISTER,
@@ -17,6 +18,7 @@ function App() {
       <Router>
         <div className="App">
           <Routes>
+            <Route path={PATH_HOME} element={<HomePage />} />
             <Route path={PATH_LOGIN} element={<Login />} />
             <Route path={PATH_REGISTER} element={<Register />} />
             <Route
