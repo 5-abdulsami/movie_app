@@ -2,7 +2,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
-// import validation & path constants
+// Import validation & path constants
 import {
   PATH_DASHBOARD,
   PATH_LOGIN,
@@ -15,6 +15,20 @@ import {
   VALIDATION_CONFIRM_PASSWORD_REQUIRED,
   VALIDATION_PASSWORDS_DO_NOT_MATCH,
 } from "../constants/appConstants"
+
+// Import Material-UI components
+import {
+  Container,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  CircularProgress,
+  Alert,
+  Stack
+} from '@mui/material';
+
+import { SxProps, Theme } from '@mui/material/styles';
 
 const Register: React.FC = () => {
   // State to manage form data and errors
@@ -30,13 +44,7 @@ const Register: React.FC = () => {
   const { register, isLoading, error, clearError, isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
-  // Redirect to dashboard if authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate(PATH_DASHBOARD, { replace: true })
-    }
-  }, [isAuthenticated, navigate])
-
+  // Clear auth context error when component mounts or error changes
   useEffect(() => {
     clearError()
   }, [clearError])
@@ -46,27 +54,27 @@ const Register: React.FC = () => {
     const newErrors: { [key: string]: string } = {}
 
     if (!formData.name.trim()) {
-      newErrors.name = VALIDATION_NAME_REQUIRED 
+      newErrors.name = VALIDATION_NAME_REQUIRED
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = VALIDATION_NAME_MIN_LENGTH 
+      newErrors.name = VALIDATION_NAME_MIN_LENGTH
     }
 
     if (!formData.email) {
-      newErrors.email = VALIDATION_EMAIL_REQUIRED 
+      newErrors.email = VALIDATION_EMAIL_REQUIRED
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = VALIDATION_EMAIL_INVALID 
+      newErrors.email = VALIDATION_EMAIL_INVALID
     }
 
     if (!formData.password) {
-      newErrors.password = VALIDATION_PASSWORD_REQUIRED 
+      newErrors.password = VALIDATION_PASSWORD_REQUIRED
     } else if (formData.password.length < 6) {
-      newErrors.password = VALIDATION_PASSWORD_MIN_LENGTH 
+      newErrors.password = VALIDATION_PASSWORD_MIN_LENGTH
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = VALIDATION_CONFIRM_PASSWORD_REQUIRED 
+      newErrors.confirmPassword = VALIDATION_CONFIRM_PASSWORD_REQUIRED
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = VALIDATION_PASSWORDS_DO_NOT_MATCH 
+      newErrors.confirmPassword = VALIDATION_PASSWORDS_DO_NOT_MATCH
     }
 
     setErrors(newErrors)
@@ -98,123 +106,211 @@ const Register: React.FC = () => {
 
     try {
       await register(formData.name.trim(), formData.email, formData.password)
+      if (isAuthenticated) {
+        navigate(PATH_DASHBOARD, { replace: true });
+      }
     } catch (error) {
     }
   }
 
+  const styles: { [key: string]: SxProps<Theme> } = {
+    // Outer Box: Apply the same dark black and blue gradient background as HomePage/Login
+    rootContainer: {
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'linear-gradient(to right bottom, #050A13, #132F4C, #081A26)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      py: { xs: 4, sm: 6, md: 12 },
+      px: { xs: 2, sm: 3, md: 4 },
+      textAlign: 'center',
+      overflow: 'hidden',
+      position: 'relative',
+    },
+    // Inner Box: The registration form card, consistent with HomePage/Login
+    innerBox: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      p: { xs: 3, sm: 4, md: 5 },
+      borderRadius: 3, 
+      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.7)',
+      bgcolor: 'rgba(19, 47, 76, 0.88)',
+      backdropFilter: 'blur(8px)',
+      gap: 3,
+      border: '1px solid rgba(255, 255, 255, 0.08)',
+    },
+    titleContainer: { textAlign: 'center', width: '100%' },
+    // Title: Create your account
+    title: {
+      mb: 1,
+      fontWeight: 'bold',
+      color: 'primary.light',
+      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)',
+    },
+    // Link to sign in to existing account
+    signInLinkText: {
+      fontWeight: 'bold',
+      '&:hover': { textDecoration: 'underline' }
+    },
+    formBox: {
+      width: '100%',
+      mt: 1,
+    },
+    // Consistent border radius for alerts
+    alert: {
+      mb: 2,
+      borderRadius: 2
+    },
+    // Stack for vertical spacing between inputs
+    inputStack: {
+      mb: 3,
+    },
+    textField: {
+      '& .MuiInputLabel-root': { color: 'text.secondary' },
+      '& .MuiInputBase-input': { color: 'text.primary' },
+    },
+    submitButton: {
+      mt: 3,
+      mb: 2,
+      py: 1.8,
+      borderRadius: 8,
+      bgcolor: 'primary.main',
+      color: '#fff',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+      transition: 'background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+      '&:hover': {
+        bgcolor: 'primary.dark',
+        boxShadow: '0 6px 18px rgba(0, 0, 0, 0.6)',
+      },
+    },
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{" "}
-            <Link to={PATH_LOGIN} className="font-medium text-blue-600 hover:text-blue-500"> {/* Use constant for login path */}
-              sign in to your existing account
-            </Link>
-          </p>
-        </div>
+    <Box sx={styles.rootContainer}>
+      <Container component="main" maxWidth="xs" sx={{ width: '100%' }}>
+        {/* Inner Box: The registration form card, consistent with HomePage/Login */}
+        <Box sx={styles.innerBox}>
+          <Box sx={styles.titleContainer}>
+            {/* Title: Create your account */}
+            <Typography
+              component="h1"
+              variant="h4"
+              sx={styles.title}
+            >
+              Create your account
+            </Typography>
+            {/* Link to sign in to existing account */}
+            <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.9 }}>
+              Or{" "}
+              <Link to={PATH_LOGIN} style={{ textDecoration: 'none' }}>
+                <Typography component="span" variant="body2" color="primary.main" sx={styles.signInLinkText}>
+                  sign in to your existing account
+                </Typography>
+              </Link>
+            </Typography>
+          </Box>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">{error}</div>}
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={styles.formBox}>
+            {error && (
+              <Alert severity="error" sx={styles.alert}>
+                {error}
+              </Alert>
+            )}
 
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              <input
+            {/* Stack for vertical spacing between inputs */}
+            <Stack spacing={2} sx={styles.inputStack}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
                 id="name"
+                label="Full Name"
                 name="name"
                 type="text"
                 autoComplete="name"
-                className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                  errors.name ? "border-red-300" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
-                placeholder="Enter your full name"
+                autoFocus // Keep autoFocus for the first field
                 value={formData.name}
                 onChange={handleChange}
+                error={!!errors.name}
+                helperText={errors.name}
+                variant="outlined"
+                sx={styles.textField}
               />
-              {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
-            </div>
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <input
+              <TextField
+                margin="normal"
+                required
+                fullWidth
                 id="email"
+                label="Email address"
                 name="email"
                 type="email"
                 autoComplete="email"
-                className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                  errors.email ? "border-red-300" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
-                placeholder="Enter your email"
                 value={formData.email}
                 onChange={handleChange}
+                error={!!errors.email}
+                helperText={errors.email}
+                variant="outlined"
+                sx={styles.textField}
               />
-              {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
-            </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                id="password"
+              <TextField
+                margin="normal"
+                required
+                fullWidth
                 name="password"
+                label="Password"
                 type="password"
+                id="password"
                 autoComplete="new-password"
-                className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                  errors.password ? "border-red-300" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
-                placeholder="Enter your password"
                 value={formData.password}
                 onChange={handleChange}
+                error={!!errors.password}
+                helperText={errors.password}
+                variant="outlined"
+                sx={styles.textField}
               />
-              {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
-            </div>
 
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
+              <TextField
+                margin="normal"
+                required
+                fullWidth
                 name="confirmPassword"
+                label="Confirm Password"
                 type="password"
+                id="confirmPassword"
                 autoComplete="new-password"
-                className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                  errors.confirmPassword ? "border-red-300" : "border-gray-300"
-                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
-                placeholder="Confirm your password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword}
+                variant="outlined"
+                sx={styles.textField}
               />
-              {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>}
-            </div>
-          </div>
+            </Stack>
 
-          <div>
-            <button
+            <Button
               type="submit"
+              fullWidth
+              variant="contained" 
+              size="large"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              sx={styles.submitButton}
             >
               {isLoading ? (
-                <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Creating account...
-                </div>
+                <CircularProgress size={24} color="inherit" sx={{ mr: 1 }} />
               ) : (
                 "Create account"
               )}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+            </Button>
+          </Box>
+        </Box>
+      </Container>
+    </Box>
   )
 }
 
