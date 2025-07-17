@@ -25,8 +25,10 @@ import {
   Button,
   CircularProgress,
   Alert,
-  Stack // For vertical spacing
+  Stack
 } from '@mui/material';
+
+import { SxProps, Theme } from '@mui/material/styles';
 
 const Register: React.FC = () => {
   // State to manage form data and errors
@@ -42,15 +44,8 @@ const Register: React.FC = () => {
   const { register, isLoading, error, clearError, isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
-  // Redirect to dashboard if authenticated
+  // Clear auth context error when component mounts or error changes
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate(PATH_DASHBOARD, { replace: true })
-    }
-  }, [isAuthenticated, navigate])
-
-  useEffect(() => {
-    // Clear auth context error when component mounts or error changes
     clearError()
   }, [clearError])
 
@@ -111,56 +106,100 @@ const Register: React.FC = () => {
 
     try {
       await register(formData.name.trim(), formData.email, formData.password)
+      if (isAuthenticated) {
+        navigate(PATH_DASHBOARD, { replace: true });
+      }
     } catch (error) {
     }
   }
 
-  return (
+  const styles: { [key: string]: SxProps<Theme> } = {
     // Outer Box: Apply the same dark black and blue gradient background as HomePage/Login
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'linear-gradient(to right bottom, #050A13, #132F4C, #081A26)', // Consistent gradient
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        py: { xs: 4, sm: 6, md: 12 }, // Responsive vertical padding
-        px: { xs: 2, sm: 3, md: 4 }, // Responsive horizontal padding
-        textAlign: 'center', // Keep for responsiveness if needed
-        overflow: 'hidden',
-        position: 'relative',
-      }}
-    >
+    rootContainer: {
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'linear-gradient(to right bottom, #050A13, #132F4C, #081A26)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      py: { xs: 4, sm: 6, md: 12 },
+      px: { xs: 2, sm: 3, md: 4 },
+      textAlign: 'center',
+      overflow: 'hidden',
+      position: 'relative',
+    },
+    // Inner Box: The registration form card, consistent with HomePage/Login
+    innerBox: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      p: { xs: 3, sm: 4, md: 5 },
+      borderRadius: 3, 
+      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.7)',
+      bgcolor: 'rgba(19, 47, 76, 0.88)',
+      backdropFilter: 'blur(8px)',
+      gap: 3,
+      border: '1px solid rgba(255, 255, 255, 0.08)',
+    },
+    titleContainer: { textAlign: 'center', width: '100%' },
+    // Title: Create your account
+    title: {
+      mb: 1,
+      fontWeight: 'bold',
+      color: 'primary.light',
+      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)',
+    },
+    // Link to sign in to existing account
+    signInLinkText: {
+      fontWeight: 'bold',
+      '&:hover': { textDecoration: 'underline' }
+    },
+    formBox: {
+      width: '100%',
+      mt: 1,
+    },
+    // Consistent border radius for alerts
+    alert: {
+      mb: 2,
+      borderRadius: 2
+    },
+    // Stack for vertical spacing between inputs
+    inputStack: {
+      mb: 3,
+    },
+    textField: {
+      '& .MuiInputLabel-root': { color: 'text.secondary' },
+      '& .MuiInputBase-input': { color: 'text.primary' },
+    },
+    submitButton: {
+      mt: 3,
+      mb: 2,
+      py: 1.8,
+      borderRadius: 8,
+      bgcolor: 'primary.main',
+      color: '#fff',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+      transition: 'background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+      '&:hover': {
+        bgcolor: 'primary.dark',
+        boxShadow: '0 6px 18px rgba(0, 0, 0, 0.6)',
+      },
+    },
+  };
+
+  return (
+    <Box sx={styles.rootContainer}>
       <Container component="main" maxWidth="xs" sx={{ width: '100%' }}>
         {/* Inner Box: The registration form card, consistent with HomePage/Login */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            p: { xs: 3, sm: 4, md: 5 }, // Consistent padding
-            borderRadius: 3, // Consistent rounded corners
-            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.7)', // Deeper, cinematic shadow
-            bgcolor: 'rgba(19, 47, 76, 0.88)', // Slightly translucent dark blue background
-            backdropFilter: 'blur(8px)', // Subtle frosted glass effect (can be removed if performance is an issue)
-            gap: 3, // Spacing between main sections
-            border: '1px solid rgba(255, 255, 255, 0.08)', // Subtle border for definition
-          }}
-        >
-          <Box sx={{ textAlign: 'center', width: '100%' }}>
+        <Box sx={styles.innerBox}>
+          <Box sx={styles.titleContainer}>
             {/* Title: Create your account */}
             <Typography
               component="h1"
-              variant="h4" // Consistent heading size
-              sx={{
-                mb: 1,
-                fontWeight: 'bold',
-                color: 'primary.light', // Consistent vibrant blue color
-                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)', // Consistent text shadow
-              }}
+              variant="h4"
+              sx={styles.title}
             >
               Create your account
             </Typography>
@@ -168,25 +207,22 @@ const Register: React.FC = () => {
             <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.9 }}>
               Or{" "}
               <Link to={PATH_LOGIN} style={{ textDecoration: 'none' }}>
-                <Typography component="span" variant="body2" color="primary.main" sx={{
-                    fontWeight: 'bold', // Make link text bold
-                    '&:hover': { textDecoration: 'underline' }
-                  }}
-                >
+                <Typography component="span" variant="body2" color="primary.main" sx={styles.signInLinkText}>
                   sign in to your existing account
                 </Typography>
               </Link>
             </Typography>
           </Box>
 
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ width: '100%', mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={styles.formBox}>
             {error && (
-              <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}> {/* Consistent border radius for alerts */}
+              <Alert severity="error" sx={styles.alert}>
                 {error}
               </Alert>
             )}
 
-            <Stack spacing={2} sx={{ mb: 3 }}> {/* Stack for vertical spacing between inputs */}
+            {/* Stack for vertical spacing between inputs */}
+            <Stack spacing={2} sx={styles.inputStack}>
               <TextField
                 margin="normal"
                 required
@@ -199,13 +235,10 @@ const Register: React.FC = () => {
                 autoFocus // Keep autoFocus for the first field
                 value={formData.name}
                 onChange={handleChange}
-                error={!!errors.name} // Pass boolean to error prop
-                helperText={errors.name} // Pass error message to helperText
-                variant="outlined" // Use outlined variant for modern look
-                sx={{
-                  '& .MuiInputLabel-root': { color: 'text.secondary' },
-                  '& .MuiInputBase-input': { color: 'text.primary' },
-                }}
+                error={!!errors.name}
+                helperText={errors.name}
+                variant="outlined"
+                sx={styles.textField}
               />
 
               <TextField
@@ -222,10 +255,7 @@ const Register: React.FC = () => {
                 error={!!errors.email}
                 helperText={errors.email}
                 variant="outlined"
-                sx={{
-                  '& .MuiInputLabel-root': { color: 'text.secondary' },
-                  '& .MuiInputBase-input': { color: 'text.primary' },
-                }}
+                sx={styles.textField}
               />
 
               <TextField
@@ -242,10 +272,7 @@ const Register: React.FC = () => {
                 error={!!errors.password}
                 helperText={errors.password}
                 variant="outlined"
-                sx={{
-                  '& .MuiInputLabel-root': { color: 'text.secondary' },
-                  '& .MuiInputBase-input': { color: 'text.primary' },
-                }}
+                sx={styles.textField}
               />
 
               <TextField
@@ -262,36 +289,19 @@ const Register: React.FC = () => {
                 error={!!errors.confirmPassword}
                 helperText={errors.confirmPassword}
                 variant="outlined"
-                sx={{
-                  '& .MuiInputLabel-root': { color: 'text.secondary' },
-                  '& .MuiInputBase-input': { color: 'text.primary' },
-                }}
+                sx={styles.textField}
               />
             </Stack>
 
             <Button
               type="submit"
               fullWidth
-              variant="contained" // Solid background button
-              size="large" // Larger button for better UX
+              variant="contained" 
+              size="large"
               disabled={isLoading}
-              sx={{
-                mt: 3,
-                mb: 2,
-                py: 1.8, // Consistent button padding
-                borderRadius: 8, // Consistent button border radius
-                bgcolor: 'primary.main', // Consistent primary color
-                color: '#fff', // White text
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)', // Deeper shadow for buttons
-                transition: 'background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out', // Smooth transition
-                '&:hover': {
-                  bgcolor: 'primary.dark', // Consistent hover effect
-                  boxShadow: '0 6px 18px rgba(0, 0, 0, 0.6)', // More pronounced shadow on hover
-                },
-              }}
+              sx={styles.submitButton}
             >
               {isLoading ? (
-                // Replaced custom spinner with MUI CircularProgress
                 <CircularProgress size={24} color="inherit" sx={{ mr: 1 }} />
               ) : (
                 "Create account"
