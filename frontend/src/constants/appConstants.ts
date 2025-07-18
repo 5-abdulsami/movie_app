@@ -31,3 +31,8 @@ export const VALIDATION_NAME_MIN_LENGTH = "Name must be at least 2 characters";
 export const VALIDATION_PASSWORD_MIN_LENGTH = "Password must be at least 6 characters";
 export const VALIDATION_CONFIRM_PASSWORD_REQUIRED = "Please confirm your password";
 export const VALIDATION_PASSWORDS_DO_NOT_MATCH = "Passwords do not match";
+
+// OMDB API
+export const OMDB_API_BASE_URL = "http://www.omdbapi.com/";
+export const FE_OMDB_FETCH_FAILED = "Failed to fetch movie data from OMDb. Please try again later.";
+export const FE_OMDB_NO_RESULTS = "No movies found matching your search.";
