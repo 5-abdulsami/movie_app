@@ -54,3 +54,6 @@ export const PATH_LOGOUT = "/logout";
 export const MESSAGE_SERVER_HEALTH_OK = "Server is running!";
 export const MESSAGE_SOMETHING_WENT_WRONG = "Something went wrong!";
 export const MESSAGE_ROUTE_NOT_FOUND = "Route not found";
+
+// OMDB API Constants
+export const OMDB_API_BASE_URL = "http://www.omdbapi.com/";
