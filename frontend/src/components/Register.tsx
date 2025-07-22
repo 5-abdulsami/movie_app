@@ -2,21 +2,18 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
-// Import validation & path constants
 import {
   PATH_DASHBOARD,
   PATH_LOGIN,
-  VALIDATION_NAME_REQUIRED,
-  VALIDATION_NAME_MIN_LENGTH,
   VALIDATION_EMAIL_REQUIRED,
   VALIDATION_EMAIL_INVALID,
   VALIDATION_PASSWORD_REQUIRED,
   VALIDATION_PASSWORD_MIN_LENGTH,
   VALIDATION_CONFIRM_PASSWORD_REQUIRED,
   VALIDATION_PASSWORDS_DO_NOT_MATCH,
+  VALIDATION_NAME_REQUIRED,
 } from "../constants/appConstants"
 
-// Import Material-UI components
 import {
   Container,
   Box,
@@ -25,13 +22,13 @@ import {
   Button,
   CircularProgress,
   Alert,
-  Stack
+  Stack,
+  useTheme
 } from '@mui/material';
 
 import { SxProps, Theme } from '@mui/material/styles';
 
 const Register: React.FC = () => {
-  // State to manage form data and errors
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -40,23 +37,27 @@ const Register: React.FC = () => {
   })
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
-  // Access the authentication context
   const { register, isLoading, error, clearError, isAuthenticated } = useAuth()
+  // Use the useNavigate hook to programmatically navigate
   const navigate = useNavigate()
+  const theme = useTheme<Theme>();
 
-  // Clear auth context error when component mounts or error changes
   useEffect(() => {
-    clearError()
+    // Redirect to dashboard if already authenticated
+    if (isAuthenticated) {
+      navigate(PATH_DASHBOARD, { replace: true })
+    }
+  }, [isAuthenticated, navigate])
+
+  useEffect(() => {
+    clearError();
   }, [clearError])
 
-  // Validate form data before submission
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {}
 
-    if (!formData.name.trim()) {
+    if (!formData.name) {
       newErrors.name = VALIDATION_NAME_REQUIRED
-    } else if (formData.name.trim().length < 2) {
-      newErrors.name = VALIDATION_NAME_MIN_LENGTH
     }
 
     if (!formData.email) {
@@ -88,7 +89,6 @@ const Register: React.FC = () => {
       [name]: value,
     }))
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -105,97 +105,101 @@ const Register: React.FC = () => {
     }
 
     try {
-      await register(formData.name.trim(), formData.email, formData.password)
-      if (isAuthenticated) {
-        navigate(PATH_DASHBOARD, { replace: true });
-      }
+      await register(formData.name, formData.email, formData.password)
     } catch (error) {
     }
   }
 
   const styles: { [key: string]: SxProps<Theme> } = {
-    // Outer Box: Apply the same dark black and blue gradient background as HomePage/Login
     rootContainer: {
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'linear-gradient(to right bottom, #050A13, #132F4C, #081A26)',
+      background: theme.palette.gradients.darkPrimary,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
-      py: { xs: 4, sm: 6, md: 12 },
+      py: { xs: 4, sm: 6, md: 8 },
       px: { xs: 2, sm: 3, md: 4 },
       textAlign: 'center',
       overflow: 'hidden',
       position: 'relative',
+      color: theme.palette.text.primary,
     },
-    // Inner Box: The registration form card, consistent with HomePage/Login
     innerBox: {
+      position: 'relative',
+      zIndex: 1,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      p: { xs: 3, sm: 4, md: 5 },
-      borderRadius: 3, 
-      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.7)',
-      bgcolor: 'rgba(19, 47, 76, 0.88)',
-      backdropFilter: 'blur(8px)',
-      gap: 3,
-      border: '1px solid rgba(255, 255, 255, 0.08)',
+      p: { xs: 3, sm: 5, md: 5 },
+      borderRadius: theme.shape.borderRadius,
+      bgcolor: theme.palette.background.paper,
+      boxShadow: `0 8px 30px rgba(0,0,0,0.7), 0 0 15px ${theme.palette.glow.main}30`,
+      gap: { xs: 2.5, sm: 3.5 },
+      maxWidth: 600,
+      width: '100%',
     },
     titleContainer: { textAlign: 'center', width: '100%' },
-    // Title: Create your account
     title: {
-      mb: 1,
-      fontWeight: 'bold',
-      color: 'primary.light',
-      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)',
+      mb: 1.5,
+      fontWeight: 700,
+      color: theme.palette.primary.light,
+      textShadow: `0 0 10px ${theme.palette.glow.main}80`,
     },
-    // Link to sign in to existing account
     signInLinkText: {
-      fontWeight: 'bold',
-      '&:hover': { textDecoration: 'underline' }
+      fontWeight: 600,
+      color: theme.palette.primary.main,
+      transition: 'color 0.2s ease-in-out',
+      '&:hover': {
+        color: theme.palette.primary.light,
+        textDecoration: 'underline',
+      }
     },
     formBox: {
       width: '100%',
-      mt: 1,
+      mt: 2,
     },
-    // Consistent border radius for alerts
     alert: {
-      mb: 2,
-      borderRadius: 2
-    },
-    // Stack for vertical spacing between inputs
-    inputStack: {
       mb: 3,
+      borderRadius: theme.shape.borderRadius,
+      boxShadow: theme.shadows[2],
     },
-    textField: {
-      '& .MuiInputLabel-root': { color: 'text.secondary' },
-      '& .MuiInputBase-input': { color: 'text.primary' },
+    inputStack: {
+      mb: 4,
+      gap: 2.5,
     },
     submitButton: {
       mt: 3,
       mb: 2,
-      py: 1.8,
-      borderRadius: 8,
-      bgcolor: 'primary.main',
-      color: '#fff',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
-      transition: 'background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-      '&:hover': {
-        bgcolor: 'primary.dark',
-        boxShadow: '0 6px 18px rgba(0, 0, 0, 0.6)',
-      },
+      py: { xs: 1.5, sm: 2 },
+      borderRadius: theme.shape.borderRadius,
+    },
+    progressInButton: {
+      color: 'inherit',
+      ml: 1,
+    },
+    backgroundEffect: {
+      position: 'absolute',
+      width: '100%',
+      height: '90%',
+      borderRadius: '20%',
+      backgroundColor: theme.palette.primary.dark,
+      opacity: 0.05,
+      filter: 'blur(100px)',
+      animation: 'blob-animation 20s infinite alternate ease-in-out',
+      zIndex: 0,
     },
   };
 
   return (
     <Box sx={styles.rootContainer}>
+      <Box sx={{ ...styles.backgroundEffect, top: '10%', left: '5%' }} />
+            <Box sx={{ ...styles.backgroundEffect, bottom: '15%', right: '10%', animationDelay: '-10s' }} />
       <Container component="main" maxWidth="xs" sx={{ width: '100%' }}>
-        {/* Inner Box: The registration form card, consistent with HomePage/Login */}
         <Box sx={styles.innerBox}>
           <Box sx={styles.titleContainer}>
-            {/* Title: Create your account */}
             <Typography
               component="h1"
               variant="h4"
@@ -203,12 +207,11 @@ const Register: React.FC = () => {
             >
               Create your account
             </Typography>
-            {/* Link to sign in to existing account */}
             <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.9 }}>
-              Or{" "}
-              <Link to={PATH_LOGIN} style={{ textDecoration: 'none' }}>
-                <Typography component="span" variant="body2" color="primary.main" sx={styles.signInLinkText}>
-                  sign in to your existing account
+              Already have an account?{" "}
+              <Link to={PATH_LOGIN}>
+                <Typography component="span" variant="body2" sx={styles.signInLinkText}>
+                  Sign in
                 </Typography>
               </Link>
             </Typography>
@@ -221,7 +224,6 @@ const Register: React.FC = () => {
               </Alert>
             )}
 
-            {/* Stack for vertical spacing between inputs */}
             <Stack spacing={2} sx={styles.inputStack}>
               <TextField
                 margin="normal"
@@ -230,9 +232,8 @@ const Register: React.FC = () => {
                 id="name"
                 label="Full Name"
                 name="name"
-                type="text"
                 autoComplete="name"
-                autoFocus // Keep autoFocus for the first field
+                autoFocus
                 value={formData.name}
                 onChange={handleChange}
                 error={!!errors.name}
@@ -240,7 +241,6 @@ const Register: React.FC = () => {
                 variant="outlined"
                 sx={styles.textField}
               />
-
               <TextField
                 margin="normal"
                 required
@@ -257,7 +257,6 @@ const Register: React.FC = () => {
                 variant="outlined"
                 sx={styles.textField}
               />
-
               <TextField
                 margin="normal"
                 required
@@ -274,7 +273,6 @@ const Register: React.FC = () => {
                 variant="outlined"
                 sx={styles.textField}
               />
-
               <TextField
                 margin="normal"
                 required
@@ -296,15 +294,15 @@ const Register: React.FC = () => {
             <Button
               type="submit"
               fullWidth
-              variant="contained" 
+              variant="contained"
               size="large"
               disabled={isLoading}
               sx={styles.submitButton}
             >
               {isLoading ? (
-                <CircularProgress size={24} color="inherit" sx={{ mr: 1 }} />
+                <CircularProgress size={24} sx={styles.progressInButton} />
               ) : (
-                "Create account"
+                "Register"
               )}
             </Button>
           </Box>
@@ -314,4 +312,4 @@ const Register: React.FC = () => {
   )
 }
 
-export default Register
+export default Register;
