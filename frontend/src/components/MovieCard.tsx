@@ -1,0 +1,118 @@
+
+import React from 'react';
+import { Card, CardContent, CardMedia, Typography, Box, useTheme } from '@mui/material';
+import { SxProps, Theme, darken } from '@mui/material/styles';
+import { MovieSearchResult } from '../types';
+import { useNavigate } from 'react-router-dom';
+import { PATH_MOVIE_DETAIL } from '../constants/appConstants';
+
+interface MovieCardProps {
+  movie: MovieSearchResult;
+}
+
+const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
+  // Use the useNavigate hook to programmatically navigate
+  const navigate = useNavigate();
+  const theme = useTheme<Theme>();
+
+  const handleCardClick = () => {
+    navigate(PATH_MOVIE_DETAIL.replace(':imdbID', movie.imdbID));
+  };
+
+  const styles: { [key: string]: SxProps<Theme> } = {
+    card: {
+      width: 300,
+      height: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
+      bgcolor: theme.palette.background.paper, 
+      borderRadius: theme.shape.borderRadius, 
+      boxShadow: `0 6px 16px rgba(0, 0, 0, 0.6), 0 0 10px ${theme.palette.glow.main}20`, 
+      transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+      cursor: 'pointer',
+      overflow: 'hidden', 
+      '&:hover': {
+        transform: 'scale(1.05)', 
+        boxShadow: `0 12px 25px rgba(0, 0, 0, 0.8), 0 0 20px ${theme.palette.glow.main}50`, 
+      },
+      '&:active': {
+        transform: 'scale(0.98)',
+        boxShadow: `0 4px 10px rgba(0, 0, 0, 0.6), 0 0 8px ${theme.palette.glow.main}30`,
+      },
+    },
+    media: {
+      height: 300, 
+      width: '100%',
+      objectFit: 'cover',
+    },
+    content: {
+      flexGrow: 1,
+      p: 2,
+      textAlign: 'left',
+      color: theme.palette.text.primary,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+    },
+    title: {
+      fontWeight: 'bold',
+      lineHeight: 1.3,
+      mb: 0.5,
+      color: theme.palette.primary.light, 
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      display: '-webkit-box',
+      WebkitLineClamp: 2,
+      WebkitBoxOrient: 'vertical',
+      fontSize: '1.1rem',
+    },
+    year: {
+      color: theme.palette.text.secondary, 
+      fontSize: '1rem',
+      mt: 1,
+    },
+    noPosterBox: {
+      height: 350,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      bgcolor: darken(theme.palette.background.paper, 0.2), 
+      color: theme.palette.text.disabled,
+      textAlign: 'center',
+      p: 2,
+      '& .MuiTypography-root': {
+        fontWeight: 600,
+        opacity: 0.7,
+      }
+    },
+  };
+
+  return (
+    <Card sx={styles.card} onClick={handleCardClick}>
+      {movie.Poster && movie.Poster !== "N/A" ? (
+        <CardMedia
+          component="img"
+          image={movie.Poster}
+          alt={movie.Title}
+          sx={styles.media}
+        />
+      ) : (
+        <Box sx={styles.noPosterBox}>
+          <Typography variant="body2">No Poster Available</Typography>
+          <Typography variant="caption">{movie.Title}</Typography>
+        </Box>
+      )}
+      <CardContent sx={styles.content}>
+        <Typography variant="h6" component="div" sx={styles.title}>
+          {movie.Title}
+        </Typography>
+        <Typography variant="body2" sx={styles.year}>
+          {movie.Year}
+        </Typography>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default MovieCard;
