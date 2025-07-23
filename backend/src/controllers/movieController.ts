@@ -1,26 +1,60 @@
 import { Request, Response } from 'express';
 import axios from 'axios';
-import { OMDB_API_BASE_URL } from '../constants/apiConstants';
-const OMDB_API_KEY = process.env.OMDB_API_KEY as string;
-import User from '../models/User';
 import { Types } from 'mongoose';
+import User from '../models/User';
+import {
+    OMDB_API_BASE_URL,
+    STATUS_OK,
+    STATUS_BAD_REQUEST,
+    STATUS_INTERNAL_SERVER_ERROR,
+    STATUS_NOT_FOUND,
+    STATUS_UNAUTHORIZED,
+    MESSAGE_SERVER_ERROR,
+    MESSAGE_USER_NOT_FOUND,
+    MESSAGE_AUTH_NO_TOKEN, 
+    MESSAGE_OMDB_API_KEY_MISSING, 
+    MESSAGE_SEARCH_QUERY_EMPTY, 
+    MESSAGE_NO_MOVIES_FOUND, 
+    MESSAGE_FAILED_FETCH_OMDB, 
+    MESSAGE_IMDB_ID_REQUIRED, 
+    MESSAGE_MOVIE_DETAILS_NOT_FOUND, 
+    MESSAGE_INTERNAL_SERVER_FETCH_ERROR, 
+    MESSAGE_ADD_FAVORITE_SUCCESS,
+    MESSAGE_REMOVE_FAVORITE_SUCCESS
+} from '../constants/apiConstants';
 
-if (!OMDB_API_KEY) {
-    console.error('SERVER ERROR: OMDB_API_KEY is not defined in backend environment variables.');
-}
+const OMDB_API_KEY = process.env.OMDB_API_KEY as string;
+
+// Helper function to handle common user/auth checks
+const getUserAndCheckAuth = async (req: Request & { user?: { id?: string } }, res: Response) => {
+    const userId = req.user?.id;
+
+    if (!userId) {
+        res.status(STATUS_UNAUTHORIZED).json({ message: MESSAGE_AUTH_NO_TOKEN }); 
+        return null;
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+        res.status(STATUS_NOT_FOUND).json({ message: MESSAGE_USER_NOT_FOUND }); 
+        return null;
+    }
+    return user;
+};
 
 export const searchMovies = async (req: Request, res: Response) => {
     const { query, page } = req.query;
 
     if (!OMDB_API_KEY) {
-        return res.status(500).json({ success: false, message: 'Server OMDb API Key is missing.' });
+        return res.status(STATUS_INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGE_OMDB_API_KEY_MISSING }); 
     }
     if (!query || typeof query !== 'string' || query.trim() === '') {
-        return res.status(400).json({ success: false, message: 'Search query cannot be empty.' });
+        return res.status(STATUS_BAD_REQUEST).json({ success: false, message: MESSAGE_SEARCH_QUERY_EMPTY }); 
     }
 
     const pageNum = parseInt(page as string, 10);
-    const requestedPage = isNaN(pageNum) || pageNum < 1 ? 1 : pageNum; // Default to 1 if not a valid number
+    const requestedPage = isNaN(pageNum) || pageNum < 1 ? 1 : pageNum;
 
     try {
         const omdbResponse = await axios.get(
@@ -29,24 +63,23 @@ export const searchMovies = async (req: Request, res: Response) => {
         const omdbData = omdbResponse.data;
 
         if (omdbData.Response === 'True') {
-            return res.status(200).json({
+            return res.status(STATUS_OK).json({ 
                 success: true,
                 movies: omdbData.Search,
                 totalResults: parseInt(omdbData.totalResults || '0', 10),
             });
         } else if (omdbData.Response === 'False' && omdbData.Error === 'Movie not found!') {
-            return res.status(200).json({
+            return res.status(STATUS_OK).json({ 
                 success: true,
                 movies: [],
                 totalResults: 0,
-                message: 'No movies found for your search.',
+                message: MESSAGE_NO_MOVIES_FOUND, 
             });
         } else {
-            return res.status(400).json({ success: false, message: omdbData.Error || 'Failed to fetch movies from OMDb.' });
+            return res.status(STATUS_BAD_REQUEST).json({ success: false, message: omdbData.Error || MESSAGE_FAILED_FETCH_OMDB }); 
         }
     } catch (error: any) {
-        console.error('Error fetching movies from OMDb via backend:', error.message);
-        return res.status(500).json({ success: false, message: 'Internal server error while fetching movies.' });
+        return res.status(STATUS_INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGE_INTERNAL_SERVER_FETCH_ERROR }); 
     }
 };
 
@@ -54,10 +87,10 @@ export const getMovieDetails = async (req: Request, res: Response) => {
     const { imdbID } = req.params;
 
     if (!OMDB_API_KEY) {
-        return res.status(500).json({ success: false, message: 'Server OMDb API Key is missing.' });
+        return res.status(STATUS_INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGE_OMDB_API_KEY_MISSING }); 
     }
     if (!imdbID || typeof imdbID !== 'string') {
-        return res.status(400).json({ success: false, message: 'Movie IMDb ID is required.' });
+        return res.status(STATUS_BAD_REQUEST).json({ success: false, message: MESSAGE_IMDB_ID_REQUIRED }); 
     }
 
     try {
@@ -67,55 +100,32 @@ export const getMovieDetails = async (req: Request, res: Response) => {
         const omdbData = omdbResponse.data;
 
         if (omdbData.Response === 'True') {
-            return res.status(200).json({ success: true, movie: omdbData });
+            return res.status(STATUS_OK).json({ success: true, movie: omdbData }); 
         } else {
-            return res.status(404).json({ success: false, message: omdbData.Error || 'Movie details not found.' });
+            return res.status(STATUS_NOT_FOUND).json({ success: false, message: omdbData.Error || MESSAGE_MOVIE_DETAILS_NOT_FOUND }); 
         }
     } catch (error: any) {
-        console.error('Error fetching movie details from OMDb via backend:', error.message);
-        return res.status(500).json({ success: false, message: 'Internal server error while fetching movie details.' });
+        return res.status(STATUS_INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGE_INTERNAL_SERVER_FETCH_ERROR }); 
     }
-};
-
-// Helper function to handle common user/auth checks
-const getUserAndCheckAuth = async (req: Request & { user?: { id?: string } }, res: Response) => {
-    const userId = req.user?.id;
-
-    if (!userId) {
-        res.status(401).json({ message: 'User not authenticated' });
-        return null;
-    }
-
-    const user = await User.findById(userId);
-
-    if (!user) {
-        res.status(404).json({ message: 'User not found' });
-        return null;
-    }
-    return user;
 };
 
 // Add a movie to favorites
 export const addFavorite = async (req: Request, res: Response) => {
     try {
         const user = await getUserAndCheckAuth(req, res);
-        if (!user) return; // Exit if user not found or not authenticated
+        if (!user) return;
 
         const { movieId } = req.params;
-
-        // Ensure favorites array exists and add movieId if not already present
-        const { Types } = require('mongoose');
-        const movieObjectId = new Types.ObjectId(movieId);
+        const movieObjectId = new Types.ObjectId(movieId); 
 
         if (!user.favorites.some((fav: Types.ObjectId) => fav.toString() === movieObjectId.toString())) {
             user.favorites.push(movieObjectId);
             await user.save();
         }
 
-        return res.status(200).json({ message: 'Added to favorites', favorites: user.favorites });
+        return res.status(STATUS_OK).json({ message: MESSAGE_ADD_FAVORITE_SUCCESS, favorites: user.favorites }); 
     } catch (error) {
-        console.error("Error adding favorite:", error);
-        return res.status(500).json({ message: 'Server error' });
+        return res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MESSAGE_SERVER_ERROR }); 
     }
 };
 
@@ -123,21 +133,19 @@ export const addFavorite = async (req: Request, res: Response) => {
 export const removeFavorite = async (req: Request, res: Response) => {
     try {
         const user = await getUserAndCheckAuth(req, res);
-        if (!user) return; // Exit if user not found or not authenticated
+        if (!user) return;
 
         const { movieId } = req.params;
 
-        // Filter out the movieId
         user.favorites = user.favorites.filter(
             (fav: Types.ObjectId) => fav.toString() !== movieId.toString()
         );
 
         await user.save();
 
-        return res.status(200).json({ message: 'Removed from favorites', favorites: user.favorites });
+        return res.status(STATUS_OK).json({ message: MESSAGE_REMOVE_FAVORITE_SUCCESS, favorites: user.favorites }); 
     } catch (error) {
-        console.error("Error removing favorite:", error);
-        return res.status(500).json({ message: 'Server error' });
+        return res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MESSAGE_SERVER_ERROR }); 
     }
 };
 
@@ -145,11 +153,10 @@ export const removeFavorite = async (req: Request, res: Response) => {
 export const getFavorites = async (req: Request, res: Response) => {
     try {
         const user = await getUserAndCheckAuth(req, res);
-        if (!user) return; // Exit if user not found or not authenticated
+        if (!user) return;
 
-        return res.status(200).json({ favorites: user.favorites });
+        return res.status(STATUS_OK).json({ favorites: user.favorites }); 
     } catch (error) {
-        console.error("Error getting favorites:", error);
-        return res.status(500).json({ message: 'Server error' });
+        return res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MESSAGE_SERVER_ERROR }); 
     }
 };

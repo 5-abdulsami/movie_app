@@ -57,3 +57,20 @@ export const MESSAGE_ROUTE_NOT_FOUND = "Route not found";
 
 // OMDB API Constants
 export const OMDB_API_BASE_URL = "http://www.omdbapi.com/";
+export const MESSAGE_OMDB_API_KEY_MISSING = "Server OMDb API Key is missing.";
+export const MESSAGE_SEARCH_QUERY_EMPTY = "Search query cannot be empty.";
+
+// Movie Constants
+export const MESSAGE_NO_MOVIES_FOUND = "No movies found for your search.";
+export const MESSAGE_FAILED_FETCH_OMDB = "Failed to fetch movies from OMDb.";
+export const MESSAGE_IMDB_ID_REQUIRED = "Movie IMDb ID is required.";
+export const MESSAGE_MOVIE_DETAILS_NOT_FOUND = "Movie details not found.";
+export const MESSAGE_INTERNAL_SERVER_FETCH_ERROR = "Internal server error while fetching movie data.";
+
+// Favorites Constants
+export const MESSAGE_ADD_FAVORITE_SUCCESS = "Added to favorites";
+export const MESSAGE_REMOVE_FAVORITE_SUCCESS = "Removed from favorites";
+export const MESSAGE_GET_FAVORITES_SUCCESS = "Favorites fetched successfully";
+export const MESSAGE_ADD_FAVORITE_FAILED = "Failed to add favorite";
+export const MESSAGE_REMOVE_FAVORITE_FAILED = "Failed to remove favorite";
+export const MESSAGE_GET_FAVORITES_FAILED = "Failed to fetch favorites";
