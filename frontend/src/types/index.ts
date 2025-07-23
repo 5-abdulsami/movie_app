@@ -75,18 +75,3 @@ export interface MovieDetail {
   Production: string
   Website: string
 }
-
-// Represents the structure of the OMDB API search response (for '?s=' calls)
-export interface OmdbSearchResponse {
-  Search?: MovieSearchResult[]
-  totalResults?: string
-  Response: "True" | "False"
-  Error?: string
-}
-
-// Represents the full OMDB API detail response (for '?i=' calls),
-// which includes movie details plus the API response status
-export interface OmdbDetailResponse extends MovieDetail {
-  Response: "True" | "False"
-  Error?: string
-}
