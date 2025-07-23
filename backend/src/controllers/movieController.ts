@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import axios from 'axios';
 import { OMDB_API_BASE_URL } from '../constants/apiConstants';
 const OMDB_API_KEY = process.env.OMDB_API_KEY as string;
+import User from '../models/User';
+import { Types } from 'mongoose';
 
 if (!OMDB_API_KEY) {
     console.error('SERVER ERROR: OMDB_API_KEY is not defined in backend environment variables.');
@@ -72,5 +74,82 @@ export const getMovieDetails = async (req: Request, res: Response) => {
     } catch (error: any) {
         console.error('Error fetching movie details from OMDb via backend:', error.message);
         return res.status(500).json({ success: false, message: 'Internal server error while fetching movie details.' });
+    }
+};
+
+// Helper function to handle common user/auth checks
+const getUserAndCheckAuth = async (req: Request & { user?: { id?: string } }, res: Response) => {
+    const userId = req.user?.id;
+
+    if (!userId) {
+        res.status(401).json({ message: 'User not authenticated' });
+        return null;
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+        res.status(404).json({ message: 'User not found' });
+        return null;
+    }
+    return user;
+};
+
+// Add a movie to favorites
+export const addFavorite = async (req: Request, res: Response) => {
+    try {
+        const user = await getUserAndCheckAuth(req, res);
+        if (!user) return; // Exit if user not found or not authenticated
+
+        const { movieId } = req.params;
+
+        // Ensure favorites array exists and add movieId if not already present
+        const { Types } = require('mongoose');
+        const movieObjectId = new Types.ObjectId(movieId);
+
+        if (!user.favorites.some((fav: Types.ObjectId) => fav.toString() === movieObjectId.toString())) {
+            user.favorites.push(movieObjectId);
+            await user.save();
+        }
+
+        return res.status(200).json({ message: 'Added to favorites', favorites: user.favorites });
+    } catch (error) {
+        console.error("Error adding favorite:", error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+};
+
+// Remove a movie from favorites
+export const removeFavorite = async (req: Request, res: Response) => {
+    try {
+        const user = await getUserAndCheckAuth(req, res);
+        if (!user) return; // Exit if user not found or not authenticated
+
+        const { movieId } = req.params;
+
+        // Filter out the movieId
+        user.favorites = user.favorites.filter(
+            (fav: Types.ObjectId) => fav.toString() !== movieId.toString()
+        );
+
+        await user.save();
+
+        return res.status(200).json({ message: 'Removed from favorites', favorites: user.favorites });
+    } catch (error) {
+        console.error("Error removing favorite:", error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+};
+
+// Get all favorite movies for current user
+export const getFavorites = async (req: Request, res: Response) => {
+    try {
+        const user = await getUserAndCheckAuth(req, res);
+        if (!user) return; // Exit if user not found or not authenticated
+
+        return res.status(200).json({ favorites: user.favorites });
+    } catch (error) {
+        console.error("Error getting favorites:", error);
+        return res.status(500).json({ message: 'Server error' });
     }
 };
