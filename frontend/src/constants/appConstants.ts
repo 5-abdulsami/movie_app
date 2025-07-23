@@ -41,3 +41,11 @@ export const VALIDATION_PASSWORDS_DO_NOT_MATCH = "Passwords do not match";
 export const FE_OMDB_FETCH_FAILED = "Failed to fetch movie data from OMDb. Please try again later.";
 export const FE_OMDB_NO_RESULTS = "No movies found matching your search.";
 export const FE_OMDB_DEFAULT_QUERY = "superman";
+
+// Movie Constants  
+export const FE_MOVIE_ID_REQUIRED = "Movie ID is required.";
+export const FE_BACKEND_COMM_ERROR = " (Backend communication error).";
+export const FE_NETWORK_ERROR = " (Network error or Backend unreachable).";
+export const FE_FETCH_FAVORITES_FAILED = "Failed to fetch favorites.";
+export const FE_ADD_FAVORITE_FAILED = "Failed to add favorite.";
+export const FE_REMOVE_FAVORITE_FAILED = "Failed to remove favorite.";
