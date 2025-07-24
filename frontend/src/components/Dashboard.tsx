@@ -21,9 +21,10 @@ import MovieCard from "../components/MovieCard";
 import { searchMovies } from "../services/movieService";
 import { MovieSearchResult } from "../types";
 import { FE_OMDB_DEFAULT_QUERY } from "../constants/appConstants";
+import { getFavorites } from '../services/movieService';
 
 const Dashboard: React.FC = () => {
-  const { logout, user: currentUser, isLoading: authLoading, error: authError } = useAuth();
+  const { logout, user: currentUser, isLoading: authLoading, error: authError, token } = useAuth();
   const navigate = useNavigate();
   const theme = useTheme<Theme>();
 
@@ -31,6 +32,7 @@ const Dashboard: React.FC = () => {
   const [totalResults, setTotalResults] = useState(0);
   const [loadingMovies, setLoadingMovies] = useState(false);
   const [movieFetchError, setMovieFetchError] = useState<string | null>(null);
+  const [favorites, setFavorites] = useState<string[]>([]);
 
 
   const [movieListParams, setMovieListParams] = useState({
@@ -76,6 +78,16 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     fetchAndDisplayMovies();
   }, [fetchAndDisplayMovies]);
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      if (token) {
+        const { data } = await getFavorites(token);
+        if (data) setFavorites(data);
+      }
+    };
+    fetchFavorites();
+  }, [token]);
 
   const handleSearchSubmit = useCallback((newQuery: string) => {
     const queryToSet = newQuery.trim() === '' ? FE_OMDB_DEFAULT_QUERY : newQuery;
@@ -259,7 +271,12 @@ const Dashboard: React.FC = () => {
                 <Box sx={styles.movieGrid}>
                   {movies.map((movie) => (
                     <Box key={movie.imdbID} sx={styles.movieCardWrapper}>
-                      <MovieCard movie={movie} />
+                      <MovieCard
+                        movie={movie}
+                        favorites={favorites}
+                        setFavorites={setFavorites}
+                        token={token || ''}
+                      />
                     </Box>
                   ))}
                 </Box>
