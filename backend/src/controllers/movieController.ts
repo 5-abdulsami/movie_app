@@ -111,43 +111,25 @@ export const getMovieDetails = async (req: Request, res: Response) => {
 
 // Add a movie to favorites
 export const addFavorite = async (req: Request, res: Response) => {
-    try {
-        const user = await getUserAndCheckAuth(req, res);
-        if (!user) return;
-
-        const { movieId } = req.params;
-        const movieObjectId = new Types.ObjectId(movieId); 
-
-        if (!user.favorites.some((fav: Types.ObjectId) => fav.toString() === movieObjectId.toString())) {
-            user.favorites.push(movieObjectId);
-            await user.save();
-        }
-
-        return res.status(STATUS_OK).json({ message: MESSAGE_ADD_FAVORITE_SUCCESS, favorites: user.favorites }); 
-    } catch (error) {
-        return res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MESSAGE_SERVER_ERROR }); 
+    const user = await getUserAndCheckAuth(req, res);
+    if (!user) return;
+    const { movieId } = req.params;
+    if (!user.favorites.includes(movieId)) {
+      user.favorites.push(movieId);
+      await user.save();
     }
-};
-
-// Remove a movie from favorites
-export const removeFavorite = async (req: Request, res: Response) => {
-    try {
-        const user = await getUserAndCheckAuth(req, res);
-        if (!user) return;
-
-        const { movieId } = req.params;
-
-        user.favorites = user.favorites.filter(
-            (fav: Types.ObjectId) => fav.toString() !== movieId.toString()
-        );
-
-        await user.save();
-
-        return res.status(STATUS_OK).json({ message: MESSAGE_REMOVE_FAVORITE_SUCCESS, favorites: user.favorites }); 
-    } catch (error) {
-        return res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MESSAGE_SERVER_ERROR }); 
-    }
-};
+    return res.status(200).json({ message: MESSAGE_ADD_FAVORITE_SUCCESS, favorites: user.favorites });
+  };
+  
+  // Remove a movie from favorites
+  export const removeFavorite = async (req: Request, res: Response) => {
+    const user = await getUserAndCheckAuth(req, res);
+    if (!user) return;
+    const { movieId } = req.params;
+    user.favorites = user.favorites.filter(fav => fav !== movieId);
+    await user.save();
+    return res.status(200).json({ message: MESSAGE_REMOVE_FAVORITE_SUCCESS, favorites: user.favorites });
+  };
 
 // Get all favorite movies for current user
 export const getFavorites = async (req: Request, res: Response) => {
