@@ -15,7 +15,7 @@ export interface IUser extends Document {
   email: string
   password: string
   comparePassword(candidatePassword: string): Promise<boolean>
-  favorites: mongoose.Types.ObjectId[];
+  favorites: string[];
 }
 
 const UserSchema: Schema = new Schema(
@@ -39,13 +39,10 @@ const UserSchema: Schema = new Schema(
       minlength: [6, MESSAGE_USER_PASSWORD_MIN_LENGTH],
       select: false,
     },
-    favorites: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Movie',
-        default: [],
-      },
-    ],
+    favorites: {
+      type: [String], // Array of imdbID strings
+      default: [],
+    },
   },
   {
     timestamps: true,
