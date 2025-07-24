@@ -67,7 +67,7 @@ export const getMovieDetails = async (imdbID: string) => {
 
 export const getFavorites = async (token: string) => {
   try {
-    const response = await fetch(`${BACKEND_API_URL}/users/favorites`, {
+    const response = await fetch(`${BACKEND_API_URL}/movies/users/favorites`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -85,7 +85,7 @@ export const getFavorites = async (token: string) => {
 
 export const addFavorite = async (movieId: string, token: string) => {
   try {
-    const response = await fetch(`${BACKEND_API_URL}/users/favorites/${movieId}`, {
+    const response = await fetch(`${BACKEND_API_URL}/movies/users/favorites/${movieId}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -104,7 +104,7 @@ export const addFavorite = async (movieId: string, token: string) => {
 
 export const removeFavorite = async (movieId: string, token: string) => {
   try {
-    const response = await fetch(`${BACKEND_API_URL}/users/favorites/${movieId}`, {
+    const response = await fetch(`${BACKEND_API_URL}/movies/users/favorites/${movieId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`,
