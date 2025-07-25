@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Card, CardContent, CardMedia, Typography, Box, useTheme, IconButton } from '@mui/material';
 import { SxProps, Theme, darken } from '@mui/material/styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';

@@ -1,6 +1,6 @@
 // src/pages/Dashboard.tsx
 import type React from "react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import { useAuth } from "../context/AuthContext";
 import { PATH_LOGIN} from "../constants/appConstants";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +22,7 @@ import { searchMovies } from "../services/movieService";
 import { MovieSearchResult } from "../types";
 import { FE_OMDB_DEFAULT_QUERY } from "../constants/appConstants";
 import { getFavorites } from '../services/movieService';
+
 
 const Dashboard: React.FC = () => {
   const { logout, user: currentUser, isLoading: authLoading, error: authError, token } = useAuth();
@@ -206,8 +207,10 @@ const Dashboard: React.FC = () => {
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
       justifyContent: 'center',
-      gap: theme.spacing(3),
+      gap: theme.spacing(9),
       width: '100%',
+      alignItems: 'center',
+      justifyItems: 'center', // Center items in their grid cells
       '@media (min-width: 600px)': {
         gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
       },

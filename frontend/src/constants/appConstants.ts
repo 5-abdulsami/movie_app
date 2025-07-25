@@ -25,6 +25,7 @@ export const PATH_LOGIN = "/login";
 export const PATH_HOME = "/";
 export const PATH_REGISTER = "/register";
 export const PATH_DASHBOARD = "/dashboard";
+export const PATH_FAVORITES = "/favorites";
 export const PATH_MOVIE_DETAIL = "/movie/:imdbID";
 
 // Frontend Form Validation Messages
@@ -49,3 +50,7 @@ export const FE_NETWORK_ERROR = " (Network error or Backend unreachable).";
 export const FE_FETCH_FAVORITES_FAILED = "Failed to fetch favorites.";
 export const FE_ADD_FAVORITE_FAILED = "Failed to add favorite.";
 export const FE_REMOVE_FAVORITE_FAILED = "Failed to remove favorite.";
+
+// Navigation Labels
+export const LABEL_DASHBOARD = "Dashboard";
+export const LABEL_FAVORITES = "Favorites";
