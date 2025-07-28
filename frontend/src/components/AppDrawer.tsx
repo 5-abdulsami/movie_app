@@ -3,8 +3,9 @@ import { Drawer, List, ListItemButton, ListItemIcon, ListItemText, Toolbar, Box,
 import MovieIcon from "@mui/icons-material/Movie";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import MenuIcon from "@mui/icons-material/Menu";
+import PersonIcon from "@mui/icons-material/Person";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
-import { PATH_DASHBOARD, PATH_FAVORITES, LABEL_DASHBOARD, LABEL_FAVORITES } from "../constants/appConstants";
+import { PATH_DASHBOARD, PATH_FAVORITES, LABEL_DASHBOARD, LABEL_FAVORITES, PATH_PROFILE, LABEL_PROFILE } from "../constants/appConstants";
 
 const drawerWidth = 220;
 
@@ -18,6 +19,11 @@ const navItems = [
     label: LABEL_FAVORITES,
     path: PATH_FAVORITES,
     icon: <FavoriteIcon />,
+  },
+  {
+    label: LABEL_PROFILE,
+    path: PATH_PROFILE,
+    icon: <PersonIcon />,
   },
 ];
 

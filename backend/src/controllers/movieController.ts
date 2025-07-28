@@ -126,7 +126,7 @@ export const addFavorite = async (req: Request, res: Response) => {
     const user = await getUserAndCheckAuth(req, res);
     if (!user) return;
     const { movieId } = req.params;
-    user.favorites = user.favorites.filter(fav => fav !== movieId);
+    user.favorites = user.favorites.filter(favId => favId !== movieId);
     await user.save();
     return res.status(200).json({ message: MESSAGE_REMOVE_FAVORITE_SUCCESS, favorites: user.favorites });
   };

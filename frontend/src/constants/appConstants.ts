@@ -27,6 +27,7 @@ export const PATH_REGISTER = "/register";
 export const PATH_DASHBOARD = "/dashboard";
 export const PATH_FAVORITES = "/favorites";
 export const PATH_MOVIE_DETAIL = "/movie/:imdbID";
+export const PATH_PROFILE = "/profile";
 
 // Frontend Form Validation Messages
 export const VALIDATION_EMAIL_REQUIRED = "Email is required";
@@ -54,3 +55,4 @@ export const FE_REMOVE_FAVORITE_FAILED = "Failed to remove favorite.";
 // Navigation Labels
 export const LABEL_DASHBOARD = "Dashboard";
 export const LABEL_FAVORITES = "Favorites";
+export const LABEL_PROFILE = "My Profile";

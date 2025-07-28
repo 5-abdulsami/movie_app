@@ -1,7 +1,6 @@
-import type React from "react"
-import { useState, useEffect } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { useAuth } from "../context/AuthContext"
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import {
   PATH_DASHBOARD,
   PATH_LOGIN,
@@ -12,7 +11,8 @@ import {
   VALIDATION_CONFIRM_PASSWORD_REQUIRED,
   VALIDATION_PASSWORDS_DO_NOT_MATCH,
   VALIDATION_NAME_REQUIRED,
-} from "../constants/appConstants"
+  APP_NAME,
+} from "../../constants/appConstants";
 
 import {
   Container,
@@ -26,177 +26,96 @@ import {
   useTheme
 } from '@mui/material';
 
-import { SxProps, Theme } from '@mui/material/styles';
+import { getRegisterStyles } from './styles';
+import { RegisterFormData, RegisterFormErrors, RegisterStyles } from './types';
 
 const Register: React.FC = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<RegisterFormData>({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
-  })
-  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  });
+  const [errors, setErrors] = useState<RegisterFormErrors>({});
 
-  const { register, isLoading, error, clearError, isAuthenticated } = useAuth()
-  // Use the useNavigate hook to programmatically navigate
-  const navigate = useNavigate()
-  const theme = useTheme<Theme>();
+  const { register, isLoading, error, clearError, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const styles: RegisterStyles = getRegisterStyles(theme); // Explicitly type styles
 
   useEffect(() => {
-    // Redirect to dashboard if already authenticated
     if (isAuthenticated) {
-      navigate(PATH_DASHBOARD, { replace: true })
+      navigate(PATH_DASHBOARD, { replace: true });
     }
-  }, [isAuthenticated, navigate])
+  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     clearError();
-  }, [clearError])
+  }, [clearError]);
 
   const validateForm = () => {
-    const newErrors: { [key: string]: string } = {}
+    const newErrors: RegisterFormErrors = {};
 
     if (!formData.name) {
-      newErrors.name = VALIDATION_NAME_REQUIRED
+      newErrors.name = VALIDATION_NAME_REQUIRED;
     }
 
     if (!formData.email) {
-      newErrors.email = VALIDATION_EMAIL_REQUIRED
+      newErrors.email = VALIDATION_EMAIL_REQUIRED;
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = VALIDATION_EMAIL_INVALID
+      newErrors.email = VALIDATION_EMAIL_INVALID;
     }
 
     if (!formData.password) {
-      newErrors.password = VALIDATION_PASSWORD_REQUIRED
+      newErrors.password = VALIDATION_PASSWORD_REQUIRED;
     } else if (formData.password.length < 6) {
-      newErrors.password = VALIDATION_PASSWORD_MIN_LENGTH
+      newErrors.password = VALIDATION_PASSWORD_MIN_LENGTH;
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = VALIDATION_CONFIRM_PASSWORD_REQUIRED
+      newErrors.confirmPassword = VALIDATION_CONFIRM_PASSWORD_REQUIRED;
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = VALIDATION_PASSWORDS_DO_NOT_MATCH
+      newErrors.confirmPassword = VALIDATION_PASSWORDS_DO_NOT_MATCH;
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
+    }));
 
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
         [name]: "",
-      }))
+      }));
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!validateForm()) {
-      return
+      return;
     }
 
     try {
-      await register(formData.name, formData.email, formData.password)
+      await register(formData.name, formData.email, formData.password);
     } catch (error) {
+      // Error handling is done by the auth context
     }
-  }
-
-  const styles: { [key: string]: SxProps<Theme> } = {
-    rootContainer: {
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: theme.palette.gradients.darkPrimary,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      py: { xs: 4, sm: 6, md: 8 },
-      px: { xs: 2, sm: 3, md: 4 },
-      textAlign: 'center',
-      overflow: 'hidden',
-      position: 'relative',
-      color: theme.palette.text.primary,
-    },
-    innerBox: {
-      position: 'relative',
-      zIndex: 1,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      p: { xs: 3, sm: 5, md: 5 },
-      borderRadius: theme.shape.borderRadius,
-      bgcolor: theme.palette.background.paper,
-      boxShadow: `0 8px 30px rgba(0,0,0,0.7), 0 0 15px ${theme.palette.glow.main}30`,
-      gap: { xs: 2.5, sm: 3.5 },
-      maxWidth: 600,
-      width: '100%',
-    },
-    titleContainer: { textAlign: 'center', width: '100%' },
-    title: {
-      mb: 1.5,
-      fontWeight: 700,
-      color: theme.palette.primary.light,
-      textShadow: `0 0 10px ${theme.palette.glow.main}80`,
-    },
-    signInLinkText: {
-      fontWeight: 600,
-      color: theme.palette.primary.main,
-      transition: 'color 0.2s ease-in-out',
-      '&:hover': {
-        color: theme.palette.primary.light,
-        textDecoration: 'underline',
-      }
-    },
-    formBox: {
-      width: '100%',
-      mt: 2,
-    },
-    alert: {
-      mb: 3,
-      borderRadius: theme.shape.borderRadius,
-      boxShadow: theme.shadows[2],
-    },
-    inputStack: {
-      mb: 4,
-      gap: 2.5,
-    },
-    submitButton: {
-      mt: 3,
-      mb: 2,
-      py: { xs: 1.5, sm: 2 },
-      borderRadius: theme.shape.borderRadius,
-    },
-    progressInButton: {
-      color: 'inherit',
-      ml: 1,
-    },
-    backgroundEffect: {
-      position: 'absolute',
-      width: '100%',
-      height: '90%',
-      borderRadius: '20%',
-      backgroundColor: theme.palette.primary.dark,
-      opacity: 0.05,
-      filter: 'blur(100px)',
-      animation: 'blob-animation 20s infinite alternate ease-in-out',
-      zIndex: 0,
-    },
   };
 
   return (
     <Box sx={styles.rootContainer}>
       <Box sx={{ ...styles.backgroundEffect, top: '10%', left: '5%' }} />
-            <Box sx={{ ...styles.backgroundEffect, bottom: '15%', right: '10%', animationDelay: '-10s' }} />
+      <Box sx={{ ...styles.backgroundEffect, bottom: '15%', right: '10%', animationDelay: '-10s' }} />
+      
       <Container component="main" maxWidth="xs" sx={{ width: '100%' }}>
         <Box sx={styles.innerBox}>
           <Box sx={styles.titleContainer}>
@@ -309,7 +228,7 @@ const Register: React.FC = () => {
         </Box>
       </Container>
     </Box>
-  )
-}
+  );
+};
 
 export default Register;

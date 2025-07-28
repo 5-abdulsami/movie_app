@@ -9,13 +9,8 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
-import { SxProps, Theme, darken } from "@mui/material/styles";
-
-interface SearchBarProps {
-  onSearch: (query: string) => void;
-  isLoading: boolean;
-  initialQuery?: string;
-}
+import { SearchBarProps } from './types';
+import { getSearchBarStyles } from './styles';
 
 const SearchBar: React.FC<SearchBarProps> = ({
   onSearch,
@@ -23,7 +18,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
   initialQuery = "",
 }) => {
   const [query, setQuery] = useState(initialQuery);
-  const theme = useTheme<Theme>();
+  const theme = useTheme();
+  const styles = getSearchBarStyles(theme);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -37,42 +33,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const handleClear = () => {
     setQuery("");
     onSearch("");
-  };
-
-  const styles: { [key: string]: SxProps<Theme> } = {
-    searchBox: {
-      width: "100%",
-      maxWidth: 700,
-    },
-    textField: {
-      "& .MuiOutlinedInput-root": {
-        backgroundColor: darken(theme.palette.background.paper, 0.08),
-        borderRadius: 8,
-        "& fieldset": {
-          borderColor: theme.palette.grey[700],
-        },
-        "&:hover fieldset": {
-          borderColor: theme.palette.grey[500],
-        },
-        "&.Mui-focused fieldset": {
-          borderColor: theme.palette.primary.main,
-          boxShadow: `0 0 0 3px ${theme.palette.primary.main}40`,
-        },
-      },
-      "& .MuiInputBase-input": {
-        padding: "12px 18px",
-        color: theme.palette.text.primary,
-      },
-      "& .MuiInputAdornment-root": {
-        color: theme.palette.text.secondary,
-      },
-    },
-    iconButton: {
-      color: theme.palette.text.secondary,
-      "&:hover": {
-        color: theme.palette.primary.light,
-      },
-    },
   };
 
   return (
@@ -122,4 +82,4 @@ const SearchBar: React.FC<SearchBarProps> = ({
   );
 };
 
-export default SearchBar;
+export default SearchBar; 
