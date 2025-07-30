@@ -120,3 +120,22 @@ export const removeFavorite = async (movieId: string, token: string) => {
     return { data: null, error: FE_REMOVE_FAVORITE_FAILED };
   }
 };
+
+
+export const getFavoriteMoviesDetails = async (token: string) => {
+  try {
+    const response = await fetch(`${BACKEND_API_URL}/movies/users/favorites/details`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const result = await response.json();
+    if (response.ok) {
+      return { data: result.movies, error: null };
+    } else {
+      return { data: null, error: result.message || FE_FETCH_FAVORITES_FAILED };
+    }
+  } catch (err: any) {
+    return { data: null, error: FE_FETCH_FAVORITES_FAILED };
+  }
+};

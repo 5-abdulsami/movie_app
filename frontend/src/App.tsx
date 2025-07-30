@@ -29,13 +29,11 @@ function App() {
             <Route path={PATH_HOME} element={<HomePage />} />
             <Route path={PATH_LOGIN} element={<Login />} />
             <Route path={PATH_REGISTER} element={<Register />} />
-            {/* NEW ROUTE FOR MOVIE DETAIL PAGE */}
-          <Route path={PATH_MOVIE_DETAIL} element={<ProtectedRoute><MovieDetailPage /></ProtectedRoute>} />
+            {/* Protected routes with Drawer */}
             <Route
-              path={PATH_DASHBOARD}
               element={
                 <ProtectedRoute>
-                  <Dashboard />
+                  <AppDrawer />
                 </ProtectedRoute>
               }
             >
