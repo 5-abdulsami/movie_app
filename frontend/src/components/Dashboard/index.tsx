@@ -110,7 +110,7 @@ const Dashboard: React.FC = () => {
   const totalPages = Math.ceil(totalResults / 10);
 
   return (
-    <Box sx={styles.rootContainer}>
+    <Box >
       <Container component="main" sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Box sx={styles.dashboardContent}>
           <Box sx={styles.headerBox}>

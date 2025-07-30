@@ -1,5 +1,5 @@
 import type React from "react"
-import { createContext, useContext, useReducer, useEffect } from "react"
+import { createContext, useContext, useReducer, useEffect, useCallback } from "react"
 import type { User } from "../types/index"
 import { authAPI } from "../services/api"
 // import localStorage constants
@@ -44,7 +44,7 @@ type AuthAction =
 // Change initialState to directly use AuthStateContext
 const initialState: AuthStateContext = {
   user: null,
-  token: typeof window !== 'undefined' ? localStorage.getItem(LS_AUTH_TOKEN) : null, 
+  token: typeof window !== 'undefined' ? localStorage.getItem(LS_AUTH_TOKEN) : null,
   isLoading: false,
   isAuthenticated: false,
   error: null,
@@ -108,7 +108,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const checkAuth = async () => {
       // Check if localStorage is available for server-side rendering
-      const token = typeof window !== 'undefined' ? localStorage.getItem(LS_AUTH_TOKEN) : null 
+      const token = typeof window !== 'undefined' ? localStorage.getItem(LS_AUTH_TOKEN) : null
       if (token) {
         try {
           dispatch({ type: "SET_LOADING", payload: true })
@@ -121,15 +121,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           } else {
             // Only remove from localStorage if it's available
             if (typeof window !== 'undefined') {
-              localStorage.removeItem(LS_AUTH_TOKEN) 
-              localStorage.removeItem(LS_USER_DATA)  
+              localStorage.removeItem(LS_AUTH_TOKEN)
+              localStorage.removeItem(LS_USER_DATA)
             }
           }
         } catch (error) {
           // Only remove from localStorage if it's available
           if (typeof window !== 'undefined') {
-            localStorage.removeItem(LS_AUTH_TOKEN) 
-            localStorage.removeItem(LS_USER_DATA)  
+            localStorage.removeItem(LS_AUTH_TOKEN)
+            localStorage.removeItem(LS_USER_DATA)
           }
         } finally {
           dispatch({ type: "SET_LOADING", payload: false })
@@ -141,7 +141,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [])
 
   // The login and signup functions will call the API and update the context state
-  const login = async (email: string, password: string) => {
+  // Memoize these functions using useCallback
+  const login = useCallback(async (email: string, password: string) => {
     try {
       dispatch({ type: "AUTH_START" })
       const response = await authAPI.login({ email, password })
@@ -149,59 +150,60 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Check if the response is successful and contains user and token
       if (response.success && response.user && response.token) {
         if (typeof window !== 'undefined') {
-          localStorage.setItem(LS_AUTH_TOKEN, response.token) 
-          localStorage.setItem(LS_USER_DATA, JSON.stringify(response.user)) 
+          localStorage.setItem(LS_AUTH_TOKEN, response.token)
+          localStorage.setItem(LS_USER_DATA, JSON.stringify(response.user))
         }
         dispatch({
           type: "AUTH_SUCCESS",
           payload: { user: response.user, token: response.token },
         })
       } else {
-        throw new Error(response.message || FE_LOGIN_FAILED) 
+        throw new Error(response.message || FE_LOGIN_FAILED)
       }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message || FE_LOGIN_FAILED 
+      const errorMessage = error.response?.data?.message || error.message || FE_LOGIN_FAILED
       dispatch({ type: "AUTH_FAILURE", payload: errorMessage })
       throw error
     }
-  }
+  }, []) // No dependencies needed as dispatch is stable
 
-  const register = async (name: string, email: string, password: string) => {
+  const register = useCallback(async (name: string, email: string, password: string) => {
     try {
       dispatch({ type: "AUTH_START" })
       const response = await authAPI.register({ name, email, password })
 
       if (response.success && response.user && response.token) {
         if (typeof window !== 'undefined') {
-          localStorage.setItem(LS_AUTH_TOKEN, response.token) 
-          localStorage.setItem(LS_USER_DATA, JSON.stringify(response.user)) 
+          localStorage.setItem(LS_AUTH_TOKEN, response.token)
+          localStorage.setItem(LS_USER_DATA, JSON.stringify(response.user))
         }
         dispatch({
           type: "AUTH_SUCCESS",
           payload: { user: response.user, token: response.token },
         })
       } else {
-        throw new Error(response.message || FE_REGISTER_FAILED) 
+        throw new Error(response.message || FE_REGISTER_FAILED)
       }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message || FE_REGISTER_FAILED 
+      const errorMessage = error.response?.data?.message || error.message || FE_REGISTER_FAILED
       dispatch({ type: "AUTH_FAILURE", payload: errorMessage })
       throw error
     }
-  }
+  }, []) // No dependencies needed as dispatch is stable
 
   // The logout function clears the user data from localStorage and updates the state
-  const logout = () => {
+  const logout = useCallback(() => {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem(LS_AUTH_TOKEN) 
-      localStorage.removeItem(LS_USER_DATA)  
+      localStorage.removeItem(LS_AUTH_TOKEN)
+      localStorage.removeItem(LS_USER_DATA)
     }
     dispatch({ type: "LOGOUT" })
-  }
+  }, []) // No dependencies needed as dispatch is stable
 
-  const clearError = () => {
+  // Memoize clearError
+  const clearError = useCallback(() => {
     dispatch({ type: "CLEAR_ERROR" })
-  }
+  }, []) // No dependencies needed as dispatch is stable
 
   // The value provided to the context should include all state properties and functions
   const value: AuthContextType = {

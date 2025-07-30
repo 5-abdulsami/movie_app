@@ -1,3 +1,5 @@
+// frontend/src/pages/Login/index.tsx
+
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -38,7 +40,6 @@ const Login: React.FC = () => {
   const styles = getLoginStyles(theme);
 
   useEffect(() => {
-    // If the user is authenticated, redirect to the dashboard
     if (isAuthenticated) {
       navigate(PATH_DASHBOARD, { replace: true });
     }
@@ -48,7 +49,9 @@ const Login: React.FC = () => {
     clearError();
   }, [clearError]);
 
-  const validateForm = () => {
+  // IMPORTANT: Memoize validateForm with useCallback to prevent it from recreating on every render
+  // AND ensure setErrors only updates if actual error state changes.
+  const validateForm = React.useCallback(() => {
     const newErrors: LoginFormErrors = {};
     if (!formData.email) {
       newErrors.email = VALIDATION_EMAIL_REQUIRED;
@@ -58,9 +61,15 @@ const Login: React.FC = () => {
     if (!formData.password) {
       newErrors.password = VALIDATION_PASSWORD_REQUIRED;
     }
-    setErrors(newErrors);
+
+    // Only update errors state if the newErrors object is actually different
+    // from the current errors state (e.g., has different keys or values).
+    // This deep comparison prevents unnecessary re-renders.
+    if (JSON.stringify(newErrors) !== JSON.stringify(errors)) {
+      setErrors(newErrors);
+    }
     return Object.keys(newErrors).length === 0;
-  };
+  }, [formData.email, formData.password, errors]); // Dependencies for useCallback
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -68,17 +77,21 @@ const Login: React.FC = () => {
       ...prev,
       [name]: value,
     }));
-    
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "",
+
+    // CRITICAL FIX: Only clear the specific error if it's currently a non-empty string.
+    // This prevents unnecessary `setErrors` calls if `errors[name]` is already an empty string
+    // or undefined, which was causing the infinite re-render loop.
+    if (errors[name] && errors[name] !== "") {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: "", // Clear the error for this field
       }));
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // No change here, validateForm is now memoized
     if (!validateForm()) {
       return;
     }
@@ -92,9 +105,6 @@ const Login: React.FC = () => {
 
   return (
     <Box sx={styles.rootContainer}>
-      <Box sx={{ ...styles.backgroundEffect, top: '10%', left: '5%' }} />
-      <Box sx={{ ...styles.backgroundEffect, bottom: '15%', right: '10%', animationDelay: '-10s' }} />
-      
       <Container component="main" maxWidth="xs" sx={{ width: '100%' }}>
         <Box sx={styles.innerBox}>
           <Box sx={styles.titleContainer}>
@@ -124,7 +134,6 @@ const Login: React.FC = () => {
 
             <Stack spacing={2} sx={styles.inputStack}>
               <TextField
-                margin="normal"
                 required
                 fullWidth
                 id="email"
@@ -141,7 +150,6 @@ const Login: React.FC = () => {
                 sx={styles.textField}
               />
               <TextField
-                margin="normal"
                 required
                 fullWidth
                 name="password"
@@ -179,4 +187,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login; 
+export default Login;

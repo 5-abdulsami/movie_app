@@ -1,3 +1,4 @@
+// Register/index.ts
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -41,7 +42,7 @@ const Register: React.FC = () => {
   const { register, isLoading, error, clearError, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const theme = useTheme();
-  const styles: RegisterStyles = getRegisterStyles(theme); // Explicitly type styles
+  const styles: RegisterStyles = getRegisterStyles(theme);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -113,9 +114,6 @@ const Register: React.FC = () => {
 
   return (
     <Box sx={styles.rootContainer}>
-      <Box sx={{ ...styles.backgroundEffect, top: '10%', left: '5%' }} />
-      <Box sx={{ ...styles.backgroundEffect, bottom: '15%', right: '10%', animationDelay: '-10s' }} />
-      
       <Container component="main" maxWidth="xs" sx={{ width: '100%' }}>
         <Box sx={styles.innerBox}>
           <Box sx={styles.titleContainer}>
@@ -145,7 +143,7 @@ const Register: React.FC = () => {
 
             <Stack spacing={2} sx={styles.inputStack}>
               <TextField
-                margin="normal"
+                // Removed margin="normal"
                 required
                 fullWidth
                 id="name"
@@ -161,7 +159,7 @@ const Register: React.FC = () => {
                 sx={styles.textField}
               />
               <TextField
-                margin="normal"
+                // Removed margin="normal"
                 required
                 fullWidth
                 id="email"
@@ -177,7 +175,7 @@ const Register: React.FC = () => {
                 sx={styles.textField}
               />
               <TextField
-                margin="normal"
+                // Removed margin="normal"
                 required
                 fullWidth
                 name="password"
@@ -193,7 +191,7 @@ const Register: React.FC = () => {
                 sx={styles.textField}
               />
               <TextField
-                margin="normal"
+                // Removed margin="normal"
                 required
                 fullWidth
                 name="confirmPassword"

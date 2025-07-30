@@ -7,7 +7,7 @@ export const FE_REGISTER_FAILED = "Registration failed. Please try again.";
 export const FE_FETCH_USER_FAILED = "Failed to fetch user data.";
 
 // App Details Constants
-export const APP_NAME = "Movie Recommendation App";
+export const APP_NAME = "StreamFlix";
 export const APP_DESCRIPTION = "Discover and manage your favorite movies with personalized recommendations.";
 
 // Local Storage Keys

@@ -1,3 +1,4 @@
+// frontend/src/pages/HomePage/index.tsx
 import React from "react";
 import { Link } from "react-router-dom";
 import {
@@ -27,6 +28,14 @@ const HomePage: React.FC = () => {
       <Box sx={{ ...styles.backgroundEffect, bottom: '15%', right: '10%', animationDelay: '-10s' }} />
 
       <Container maxWidth="md" sx={styles.contentBox}>
+        {/* Add the logo here, above or alongside the APP_NAME Typography */}
+        <Box sx={styles.logoContainer}> {/* Added a new Box for logo positioning */}
+          <img
+            src="/images/movie_logo.jpg" // Public path to your image
+            alt="Movie App Logo"
+            style={{ width: 'auto', height: '80px' }} // Adjust height as needed
+          />
+        </Box>
         <Typography
           component="h1"
           variant="h1"
