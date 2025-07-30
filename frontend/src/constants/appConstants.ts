@@ -7,7 +7,7 @@ export const FE_REGISTER_FAILED = "Registration failed. Please try again.";
 export const FE_FETCH_USER_FAILED = "Failed to fetch user data.";
 
 // App Details Constants
-export const APP_NAME = "Movie Recommendation App";
+export const APP_NAME = "StreamFlix";
 export const APP_DESCRIPTION = "Discover and manage your favorite movies with personalized recommendations.";
 
 // Local Storage Keys
@@ -25,7 +25,9 @@ export const PATH_LOGIN = "/login";
 export const PATH_HOME = "/";
 export const PATH_REGISTER = "/register";
 export const PATH_DASHBOARD = "/dashboard";
+export const PATH_FAVORITES = "/favorites";
 export const PATH_MOVIE_DETAIL = "/movie/:imdbID";
+export const PATH_PROFILE = "/profile";
 
 // Frontend Form Validation Messages
 export const VALIDATION_EMAIL_REQUIRED = "Email is required";
@@ -40,7 +42,7 @@ export const VALIDATION_PASSWORDS_DO_NOT_MATCH = "Passwords do not match";
 // OMDB API Constants
 export const FE_OMDB_FETCH_FAILED = "Failed to fetch movie data from OMDb. Please try again later.";
 export const FE_OMDB_NO_RESULTS = "No movies found matching your search.";
-export const FE_OMDB_DEFAULT_QUERY = "superman";
+export const FE_OMDB_DEFAULT_QUERY = "batman";
 
 // Movie Constants  
 export const FE_MOVIE_ID_REQUIRED = "Movie ID is required.";
@@ -49,3 +51,8 @@ export const FE_NETWORK_ERROR = " (Network error or Backend unreachable).";
 export const FE_FETCH_FAVORITES_FAILED = "Failed to fetch favorites.";
 export const FE_ADD_FAVORITE_FAILED = "Failed to add favorite.";
 export const FE_REMOVE_FAVORITE_FAILED = "Failed to remove favorite.";
+
+// Navigation Labels
+export const LABEL_DASHBOARD = "Dashboard";
+export const LABEL_FAVORITES = "Favorites";
+export const LABEL_PROFILE = "My Profile";

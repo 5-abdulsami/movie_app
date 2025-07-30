@@ -86,7 +86,8 @@ let theme = createTheme({
       contrastText: common.white,
     },
     gradients: {
-      darkPrimary: `linear-gradient(135deg, #141414 0%, #000000 100%)`,
+      // CHANGED: Removed gradient, set to solid background color
+      darkPrimary: `#141414`, // or theme.palette.background.default if you prefer
       redButton: `linear-gradient(90deg, ${red[800]} 0%, ${red[600]} 100%)`,
     },
   },
@@ -241,7 +242,7 @@ let theme = createTheme({
             },
             "&.Mui-focused fieldset": {
               borderColor: theme.palette.primary.main,
-              borderWidth: "2px",
+              borderWidth: "1px",
             },
             "&.Mui-error fieldset": {
               borderColor: theme.palette.error.main,
@@ -298,9 +299,8 @@ let theme = createTheme({
           borderRadius: 8,
           background: theme.palette.background.paper,
           boxShadow: createCardShadow(theme.palette.primary.main),
-          transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+          transition: "box-shadow 0.2s ease-in-out",
           "&:hover": {
-            transform: "translateY(-5px)",
             boxShadow: createCardShadow(theme.palette.primary.light),
           },
         }),
