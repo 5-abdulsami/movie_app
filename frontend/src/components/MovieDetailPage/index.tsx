@@ -62,6 +62,7 @@ const MovieDetailPage: React.FC = () => {
     }
     return (
       <Typography variant="body1" sx={styles.detailItem}>
+        {/* Use sx prop for inline styles from a styles object to ensure theme variables are applied */}
         <span style={styles.detailLabel as React.CSSProperties}>{label}:</span>
         <span style={styles.detailValue as React.CSSProperties}>{value}</span>
       </Typography>
@@ -116,6 +117,7 @@ const MovieDetailPage: React.FC = () => {
   }
 
   return (
+    // FIX: Apply the rootContainer styles to the outermost Container
     <Container component="main" sx={styles.rootContainer}>
       <Button
         variant="contained"

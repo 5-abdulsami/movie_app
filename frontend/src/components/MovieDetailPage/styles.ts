@@ -1,5 +1,5 @@
-import { SxProps, Theme, lighten, darken } from "@mui/material/styles";
-import { MovieDetailStyles } from './types';
+import { Theme, lighten, darken } from "@mui/material/styles";
+import { MovieDetailStyles } from "./types";
 
 export const getMovieDetailStyles = (theme: Theme): MovieDetailStyles => ({
   rootContainer: {
@@ -7,12 +7,16 @@ export const getMovieDetailStyles = (theme: Theme): MovieDetailStyles => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    py: { xs: 4, sm: 6, md: 8 },
+    pt: { xs: 2, sm: 3, md: 4 },
+    pb: { xs: 4, sm: 6, md: 8 },
     px: { xs: 2, sm: 3, md: 4 },
     background: theme.palette.gradients.darkPrimary,
     color: theme.palette.text.primary,
-    overflow: "hidden",
-    position: "relative",
+    overflowX: "hidden",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
   },
   detailContentWrapper: {
     width: "100%",
@@ -61,6 +65,7 @@ export const getMovieDetailStyles = (theme: Theme): MovieDetailStyles => ({
   loadingText: {
     mt: 2,
     color: theme.palette.text.primary,
+    fontSize: { xs: "1rem", sm: "1.1rem" },
   },
   errorAlert: {
     width: "80%",
@@ -119,7 +124,8 @@ export const getMovieDetailStyles = (theme: Theme): MovieDetailStyles => ({
       theme.palette.glow.main,
       0.5
     )}`,
-    fontSize: { xs: "2rem", sm: "3rem", md: "3.8rem" },
+
+    fontSize: { xs: "1.8rem", sm: "2.5rem", md: "3.2rem" },
     "&:hover": {
       color: theme.palette.primary.light,
       textShadow: `0 0 0px ${theme.palette.glow.main}100, 0 0 0px ${theme.palette.glow.main}0`,
@@ -127,7 +133,8 @@ export const getMovieDetailStyles = (theme: Theme): MovieDetailStyles => ({
   },
   subtitle: {
     color: theme.palette.text.secondary,
-    fontSize: { xs: "1rem", sm: "1.2rem" },
+
+    fontSize: { xs: "0.95rem", sm: "1.1rem" },
     mb: 2,
     fontWeight: 500,
   },
@@ -138,7 +145,8 @@ export const getMovieDetailStyles = (theme: Theme): MovieDetailStyles => ({
     justifyContent: { xs: "center", md: "flex-start" },
     alignItems: "center",
     gap: 1,
-    fontSize: { xs: "0.95rem", sm: "1.05rem" },
+
+    fontSize: { xs: "0.9rem", sm: "1rem" },
     width: "100%",
   },
   detailLabel: {
@@ -157,20 +165,21 @@ export const getMovieDetailStyles = (theme: Theme): MovieDetailStyles => ({
     mt: 0.5,
     justifyContent: { xs: "center", md: "flex-start" },
   },
-  genreChip: { // Added this style property for the Chip component
+  genreChip: {
     backgroundColor: theme.palette.primary.dark,
     color: theme.palette.text.primary,
     borderColor: theme.palette.primary.main,
     "& .MuiChip-label": {
       fontWeight: 600,
-      fontSize: "0.8rem",
+      fontSize: "0.75rem",
     },
   },
   plotText: {
     mt: 3,
     lineHeight: 1.7,
     color: theme.palette.text.primary,
-    fontSize: { xs: "0.95rem", sm: "1.05rem" },
+
+    fontSize: { xs: "0.9rem", sm: "1rem" },
     textAlign: { xs: "center", md: "left" },
     maxWidth: "100%",
   },

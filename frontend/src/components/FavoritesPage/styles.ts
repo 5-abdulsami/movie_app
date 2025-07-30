@@ -1,4 +1,4 @@
-import { SxProps, Theme } from '@mui/material/styles';
+import { Theme } from '@mui/material/styles';
 import { FavoritesPageStyles } from './types';
 
 export const getFavoritesPageStyles = (theme: Theme): FavoritesPageStyles => ({
@@ -20,7 +20,7 @@ export const getFavoritesPageStyles = (theme: Theme): FavoritesPageStyles => ({
     display: "grid",
     gridTemplateColumns: "repeat(4, 1fr)",
     justifyContent: "center",
-    gap: theme.spacing(9),
+    gap: theme.spacing(5),
     width: "100%",
     alignItems: "center",
     justifyItems: "center",

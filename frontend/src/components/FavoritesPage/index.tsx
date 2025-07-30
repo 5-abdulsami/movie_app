@@ -49,7 +49,7 @@ const FavoritesPage: React.FC = () => {
   return (
     <Box sx={styles.root}>
       <Container maxWidth="md">
-        <Typography variant="h4" sx={{ fontWeight: 700, mb: 4, color: theme.palette.primary.light,textAlign: 'center' }}>
+        <Typography variant="h4" sx={{ fontWeight: 500, mb: 4, color: theme.palette.primary.light,textAlign: 'center' }}>
           My Favorite Movies
         </Typography>
         {loading ? (

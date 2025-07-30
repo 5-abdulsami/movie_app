@@ -42,7 +42,7 @@ export const VALIDATION_PASSWORDS_DO_NOT_MATCH = "Passwords do not match";
 // OMDB API Constants
 export const FE_OMDB_FETCH_FAILED = "Failed to fetch movie data from OMDb. Please try again later.";
 export const FE_OMDB_NO_RESULTS = "No movies found matching your search.";
-export const FE_OMDB_DEFAULT_QUERY = "superman";
+export const FE_OMDB_DEFAULT_QUERY = "batman";
 
 // Movie Constants  
 export const FE_MOVIE_ID_REQUIRED = "Movie ID is required.";
