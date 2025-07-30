@@ -142,26 +142,3 @@ export const getFavorites = async (req: Request, res: Response) => {
         return res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MESSAGE_SERVER_ERROR }); 
     }
 };
-
-export const getFavoriteMoviesDetails = async (req: Request, res: Response) => {
-  try {
-    const user = await getUserAndCheckAuth(req, res);
-    if (!user) return;
-    if (!OMDB_API_KEY) {
-      return res.status(STATUS_INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGE_OMDB_API_KEY_MISSING });
-    }
-    if (!user.favorites || user.favorites.length === 0) {
-      return res.status(STATUS_OK).json({ movies: [] });
-    }
-    // Fetch details for each favorite imdbID
-    const moviePromises = user.favorites.map(imdbID =>
-      axios.get(`${OMDB_API_BASE_URL}?i=${imdbID}&apikey=${OMDB_API_KEY}`)
-        .then((r: { data: { Response: string; }; }) => r.data && r.data.Response === 'True' ? r.data : null)
-        .catch(() => null)
-    );
-    const movies = (await Promise.all(moviePromises)).filter(Boolean);
-    return res.status(STATUS_OK).json({ movies });
-  } catch (error) {
-    return res.status(STATUS_INTERNAL_SERVER_ERROR).json({ success: false, message: 'Failed to fetch favorite movies details' });
-  }
-};
