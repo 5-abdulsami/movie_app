@@ -6,7 +6,7 @@ A full-stack movie recommendation application built with the MERN stack (MongoDB
 
 | Dashboard | Sidebar |
 | :---: | :---: |
-| <img src="https://github.com/5-abdulsami/movie_app/raw/main/iamges/dashboard.png"/> | \<img src="images/sidebar.png" width="200"/\> |
+| ![Dashboard](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/dashboard.png) | \<img src="images/sidebar.png" width="200"/\> |
 | **Favorites** | **Movie Details** |
 | \<img src="images/favorites.png" width="200"/\> | \<img src="images/movie\_details.png" width="200"/\> |
 | **Home Page** | **Login** |
