@@ -1,151 +1,120 @@
-Got it — I’ll make **one clean, copy-paste-ready README.md** with everything correctly in Markdown so you can commit it directly.
-Here’s your **final professional README**:
+## Movie Recommendation App
 
-```markdown
-# 🎬 Movie Recommendation App
+A full-stack movie recommendation application built with the MERN stack (MongoDB, Express.js, React, Node.js) and containerized with Docker. Users can browse movies, search for new ones, view details, and save favorites.
 
-A **full-stack movie recommendation application** built with the **MERN stack** (MongoDB, Express.js, React, Node.js) and containerized with **Docker**.  
-Users can browse movies, search for new ones, view detailed information, and save favorites.
-
----
-
-## 📸 Screenshots
+### Screenshots
 
 | Dashboard | Sidebar |
 | :---: | :---: |
-| ![Dashboard](images/dashboard.png) | ![Sidebar](images/sidebar.png) |
+| \![Dashboard]({{ google\_file\_content\_1 }}) | \![Sidebar]({{ google\_file\_content\_1 }}) |
+| **Favorites** | **Movie Details** |
+| \![Favorites]({{ google\_file\_content\_1 }}) | \![Movie Details]({{ google\_file\_content\_1 }}) |
+| **Home Page** | **Login** |
+| \![Home Page]({{ google\_file\_content\_1 }}) | \![Login]({{ google\_file\_content\_1 }}) |
+| **Register** | |
+| \![Register]({{ google\_file\_content\_1 }}) | |
 
-| Favorites | Movie Details |
-| :---: | :---: |
-| ![Favorites](images/favorites.png) | ![Movie Details](images/movie_details.png) |
+-----
 
-| Home Page | Login |
-| :---: | :---: |
-| ![Home Page](images/homepage.png) | ![Login](images/signin.png) |
+### Technologies Used
 
-| Register |  |
-| :---: | :---: |
-| ![Register](images/register.png) |  |
+  * **Frontend**: React.js, Nginx
+  * **Backend**: Node.js, Express.js, TypeScript
+  * **Database**: MongoDB
+  * **Containerization**: Docker, Docker Compose
+  * **API**: OMDb API
 
----
+-----
 
-## 🛠️ Technologies Used
+### Project Structure
 
-- **Frontend:** React.js, Nginx
-- **Backend:** Node.js, Express.js, TypeScript
-- **Database:** MongoDB
-- **Containerization:** Docker, Docker Compose
-- **API:** [OMDb API](https://www.omdbapi.com/)
+  * `backend/`: Contains the Node.js/Express.js backend API.
+      * `src/`: TypeScript source code for the server.
+      * `config/`: Database connection and other configuration.
+      * `routes/`: API routes for authentication and movie-related endpoints.
+      * `models/`: Mongoose schemas for MongoDB.
+  * `frontend/`: Contains the React.js frontend application.
+      * `src/`: React components, hooks, and pages.
+      * `public/`: Static assets.
+  * `images/`: Stores all the screenshots for the README.
+  * `docker-compose.yml`: Defines and manages the multi-container Docker application.
 
----
+-----
 
-## 📂 Project Structure
+### Getting Started
 
-```
+#### Prerequisites
 
-movie\_app/
-│── backend/         # Node.js/Express.js backend API
-│   ├── src/         # TypeScript source code
-│   ├── config/      # Database connection & config
-│   ├── routes/      # API routes
-│   ├── models/      # Mongoose schemas
-│
-│── frontend/        # React.js frontend
-│   ├── src/         # Components, hooks, pages
-│   ├── public/      # Static assets
-│
-│── images/          # Project screenshots for README
-│── docker-compose.yml
-│── README.md
+  * Docker and Docker Compose installed on your system.
 
-````
+#### Installation and Setup
 
----
+1.  **Clone the repository:**
 
-## 🚀 Getting Started
+    ```bash
+    git clone <your-repo-url>
+    cd <your-repo-name>
+    ```
 
-### Prerequisites
-- **Docker** and **Docker Compose** installed.
+2.  **Configure Environment Variables:**
+    The backend requires environment variables for its configuration. A sample `.env` file is located in the `backend/` directory.
 
-### Installation & Setup
+      * Create a file named `.env` inside the `backend/` directory:
+        ```bash
+        touch backend/.env
+        ```
+      * Open `backend/.env` and add your specific secret keys and database connection string. Replace the dummy values with your actual secrets.
+        ```
+        JWT_SECRET=your_jwt_secret_here
+        OMDB_API_KEY=your_omdb_api_key_here
+        MONGO_URI=mongodb://mongo:27017/movie_recommendation_db
+        PORT=5000
+        ```
+      * **Note**: `MONGO_URI` is already configured for the Docker Compose network and does not need to be changed for local development.
 
-1️⃣ **Clone the repository**
-```bash
-git clone <your-repo-url>
-cd <your-repo-name>
-````
+3.  **Run the application with Docker Compose:**
+    From the root directory of the project, run the following command. This will build the Docker images for the frontend and backend, start all three services (backend, frontend, and MongoDB), and link them together on an isolated network.
 
-2️⃣ **Configure Environment Variables**
-In the `backend/` folder, create a `.env` file:
+    ```bash
+    docker compose up -d --build
+    ```
 
-```bash
-touch backend/.env
-```
+      * `up`: Creates and starts the containers.
+      * `-d`: Runs the containers in the background (detached mode).
+      * `--build`: Forces a rebuild of the images, which is necessary after any code changes.
 
-Add the following variables:
+4.  **Access the application:**
+    Once the containers are running, you can access the application:
 
-```env
-JWT_SECRET=your_jwt_secret_here
-OMDB_API_KEY=your_omdb_api_key_here
-MONGO_URI=mongodb://mongo:27017/movie_recommendation_db
-PORT=5000
-```
+      * **Frontend:** Open your browser and navigate to `http://localhost:3000`.
+      * **Backend API:** The API is available at `http://localhost:5000/api`.
 
-> `MONGO_URI` is preconfigured for Docker Compose.
+-----
 
-3️⃣ **Run with Docker Compose**
+### Deployment on AWS EC2
 
-```bash
-docker compose up -d --build
-```
+1.  **SSH into your EC2 instance** using your private key (`.pem` file).
 
-* `up` → Start containers
-* `-d` → Detached mode
-* `--build` → Rebuild images
+2.  **Clone the repository** and navigate to the project directory.
 
-4️⃣ **Access the application**
+3.  **Update the Backend CORS Configuration**:
+    The backend's CORS middleware is configured to allow requests from `http://localhost:3000` in development. For production, you must change this to your EC2 instance's public IP address.
 
-* **Frontend:** [http://localhost:3000](http://localhost:3000)
-* **Backend API:** [http://localhost:5000/api](http://localhost:5000/api)
+      * In the file `backend/src/server.ts`, find the CORS configuration:
+        ```typescript
+        app.use(
+          cors({
+            origin: process.env.NODE_ENV === "production" ? ["https://your-frontend-domain.com"] : ["http://localhost:3000"],
+            credentials: true,
+          }),
+        )
+        ```
+      * Replace `https://your-frontend-domain.com` with `http://YOUR_EC2_PUBLIC_IP`.
 
----
+4.  **Run the application with Docker Compose** using the same command as for local setup:
 
-## ☁️ Deployment on AWS EC2
+    ```bash
+    docker compose up -d --build
+    ```
 
-1. **SSH into EC2 instance**
-
-```bash
-ssh -i your-key.pem ubuntu@your-ec2-ip
-```
-
-2. **Clone repo & navigate**
-
-```bash
-git clone <your-repo-url>
-cd <your-repo-name>
-```
-
-3. **Update Backend CORS** (`backend/src/server.ts`)
-
-```ts
-app.use(
-  cors({
-    origin: process.env.NODE_ENV === "production"
-      ? ["http://YOUR_EC2_PUBLIC_IP"]
-      : ["http://localhost:3000"],
-    credentials: true,
-  })
-);
-```
-
-4. **Run Docker Compose**
-
-```bash
-docker compose up -d --build
-```
-
-5. **Access via EC2 public IP**
-
-```
-http://YOUR_EC2_PUBLIC_IP:3000
-```
+5.  **Access the application** from your web browser using your EC2 instance's public IP address: `http://YOUR_EC2_PUBLIC_IP:3000`.
