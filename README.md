@@ -4,17 +4,30 @@ A full-stack movie recommendation application built with the MERN stack (MongoDB
 
 ### Screenshots
 
-### Screenshots
-
-### Screenshots
-
-| Homepage | Signin | Register |
-|----------|--------|----------|
-| ![Homepage](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/homepage.png) | ![Signin](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/signin.png) | ![Register](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/register.png) |
-
-| Dashboard | Sidebar | Movie Details | Favorites |
-|-----------|---------|---------------|-----------|
-| ![Dashboard](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/dashboard.png) | ![Sidebar](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/sidebar.png) | ![Movie Details](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/movie_details.png) | ![Favorites](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/favorites.png) |
+<table>
+  <tr>
+    <th>Homepage</th>
+    <th>Signin</th>
+    <th>Register</th>
+  </tr>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/homepage.png" width="400"></td>
+    <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/signin.png" width="400"></td>
+    <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/register.png" width="400"></td>
+  </tr>
+  <tr>
+    <th>Dashboard</th>
+    <th>Sidebar</th>
+    <th>Movie Details</th>
+    <th>Favorites</th>
+  </tr>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/dashboard.png" width="300"></td>
+    <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/sidebar.png" width="300"></td>
+    <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/movie_details.png" width="300"></td>
+    <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/favorites.png" width="300"></td>
+  </tr>
+</table>
 
 
 -----
