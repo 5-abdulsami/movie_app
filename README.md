@@ -9,23 +9,25 @@ A full-stack movie recommendation application built with the MERN stack (MongoDB
     <th>Homepage</th>
     <th>Signin</th>
     <th>Register</th>
+    <th>Dashboard</th>
   </tr>
   <tr>
     <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/homepage.png" width="400"></td>
     <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/signin.png" width="400"></td>
     <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/register.png" width="400"></td>
+    <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/dashboard.png" width="400"></td>
   </tr>
   <tr>
-    <th>Dashboard</th>
     <th>Sidebar</th>
     <th>Movie Details</th>
     <th>Favorites</th>
+    <th>Pagination</th>
   </tr>
   <tr>
-    <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/dashboard.png" width="300"></td>
     <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/sidebar.png" width="300"></td>
     <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/movie_details.png" width="300"></td>
     <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/favorites.png" width="300"></td>
+    <td><img src="https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/pagination.png" width="400"></td>
   </tr>
 </table>
 
