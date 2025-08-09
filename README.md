@@ -6,13 +6,15 @@ A full-stack movie recommendation application built with the MERN stack (MongoDB
 
 ### Screenshots
 
-| Dashboard | Favorites | Homepage |
-|-----------|-----------|----------|
-| ![Dashboard](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/dashboard.png) | ![Favorites](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/favorites.png) | ![Homepage](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/homepage.png) |
+### Screenshots
 
-| Movie Details | Register | Sidebar | Signin |
-|---------------|----------|---------|--------|
-| ![Movie Details](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/movie_details.png) | ![Register](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/register.png) | ![Sidebar](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/sidebar.png) | ![Signin](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/signin.png) |
+| Homepage | Signin | Register |
+|----------|--------|----------|
+| ![Homepage](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/homepage.png) | ![Signin](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/signin.png) | ![Register](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/register.png) |
+
+| Dashboard | Sidebar | Movie Details | Favorites |
+|-----------|---------|---------------|-----------|
+| ![Dashboard](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/dashboard.png) | ![Sidebar](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/sidebar.png) | ![Movie Details](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/movie_details.png) | ![Favorites](https://raw.githubusercontent.com/5-abdulsami/movie_app/main/images/favorites.png) |
 
 
 -----
