@@ -5,46 +5,36 @@ services:
     build: ./backend
     container_name: mern-backend
     ports:
-      - "5000:5000" # Host_port:Container_port
-    environment:
-      # IMPORTANT: For production, use Docker secrets or inject from AWS SSM/Secrets Manager
-      # For local testing, you can put them directly or use a .env file for Docker Compose
-      # If you use a .env file for Docker Compose, remove these lines and use 'env_file: ./.env'
-      JWT_SECRET: "your_jwt_secret_here_for_dev"
-      OMDB_API_KEY: "your_omdb_api_key_here_for_dev" # If backend calls OMDb directly
+      - "5000:5000"
 
-      # This MONGO_URI connects to the 'mongo' service within the Docker network
-      MONGO_URI: "mongodb://mongo:27017/movie_recommendation_db"
+    env_file:
+      - ./backend/.env
 
     volumes:
-      - ./backend:/app # Mount the host's backend directory into the container for development
-      - /app/node_modules # Exclude node_modules from being overwritten by the mount
+      - ./backend:/app
+      - /app/node_modules
     depends_on:
-      - mongo # Ensure backend starts after mongo container is started
-      # Removed 'frontend' from backend depends_on to avoid circular dependency
-    restart: always # Keep the backend running
+      - mongo
+    restart: always
 
   frontend:
     build: ./frontend
     container_name: mern-frontend
     ports:
-      - "3000:80" # Host_port:Container_port (Frontend Nginx runs on 80)
+      - "3000:80"
     environment:
-      # Point to the backend service name within the Docker network
-      REACT_APP_API_URL: "http://backend:5000"
+      REACT_APP_API_URL: "http://backend:5000/api"
     depends_on:
-      - backend # Ensure frontend only starts after backend is available
-    restart: always # Keep the frontend running
+      - backend
+    restart: always
 
-  # THIS IS THE CORRECT OPTION FOR YOU: Dockerized MongoDB service
   mongo:
     image: mongo:latest
     container_name: mern-mongo
     ports:
-      - "27017:27017" # Host_port:Container_port (Optional: to access mongo from host, e.g., using Robo 3T)
+      - "27017:27017"
     volumes:
-      - mongo-data:/data/db # Persist MongoDB data outside the container
+      - mongo-data:/data/db
 
-# Define a named volume for MongoDB data persistence
 volumes:
   mongo-data:
